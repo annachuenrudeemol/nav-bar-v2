@@ -1,4 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Track current active page
+    let currentPageName = 'Campaigns'; // Default to Campaigns
+    
     function initIcons() {
         if (typeof lucide !== 'undefined') {
             lucide.createIcons();
@@ -6,6 +9,56 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     initIcons();
     setTimeout(initIcons, 100);
+
+    // Function to update page content based on active page
+    function updatePageContent(pageName) {
+        currentPageName = pageName;
+        const campaignsContent = document.getElementById('campaigns-content');
+        const templateContent = document.getElementById('page-template-content');
+        const pageTitle = document.getElementById('page-template-title');
+        const pageSubtitle = document.getElementById('page-template-subtitle');
+        
+        if (pageName === 'Campaigns') {
+            // Show campaigns content, hide template
+            if (campaignsContent) campaignsContent.style.display = 'flex';
+            if (templateContent) templateContent.style.display = 'none';
+        } else {
+            // Show template, hide campaigns content
+            if (campaignsContent) campaignsContent.style.display = 'none';
+            if (templateContent) templateContent.style.display = 'flex';
+            
+            // Update template text
+            if (pageTitle) {
+                pageTitle.textContent = pageName;
+            }
+            if (pageSubtitle) {
+                pageSubtitle.textContent = `This page would show ${pageName.toLowerCase()}.`;
+            }
+        }
+        
+        // Update tabs
+        updateTabs(pageName);
+    }
+
+    // Function to update tab labels based on page name
+    function updateTabs(pageName) {
+        const tabs = document.querySelectorAll('.tab');
+        const tabLabels = [
+            `${pageName} view`,
+            `Custom ${pageName.toLowerCase()} view`,
+            `Custom ${pageName.toLowerCase()} view`
+        ];
+        
+        tabs.forEach((tab, index) => {
+            const label = tab.querySelector('.tab-label');
+            if (label && tabLabels[index]) {
+                label.textContent = tabLabels[index];
+            }
+        });
+        
+        // Reinitialize icons after updating
+        setTimeout(initIcons, 50);
+    }
 
     // Sidebar expand/collapse toggle
     const sidebar = document.querySelector('.sidebar');
@@ -173,6 +226,11 @@ document.addEventListener('DOMContentLoaded', function() {
                         const span = firstItem.querySelector('span');
                         const itemText = span?.textContent || '';
                         this.setAttribute('data-active-item', itemText);
+                        
+                        // Update page content
+                        if (itemText) {
+                            updatePageContent(itemText);
+                        }
                     }
                 }
                 
@@ -232,6 +290,13 @@ document.addEventListener('DOMContentLoaded', function() {
             // Make parent button active so it shows as selected (blue) when a child page is selected
             if (parentButton) {
                 parentButton.classList.add('active');
+            }
+            
+            // Get page name and update content
+            const pageNameSpan = this.querySelector('.nav-submenu-content span');
+            const pageName = pageNameSpan ? pageNameSpan.textContent.trim() : '';
+            if (pageName) {
+                updatePageContent(pageName);
             }
         });
     });
@@ -372,6 +437,11 @@ document.addEventListener('DOMContentLoaded', function() {
             const span = clickedItem.querySelector('span');
             const itemText = span?.textContent || '';
             parentButton.setAttribute('data-active-item', itemText);
+            
+            // Update page content
+            if (itemText) {
+                updatePageContent(itemText);
+            }
         }
         
         // Force a reflow and check
@@ -382,4 +452,7 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Computed span color:', window.getComputedStyle(clickedItem.querySelector('span')).color);
         console.log('Active class list:', clickedItem.className);
     }, true); // Use capture phase to catch it early
+
+    // Initialize page content on load
+    updatePageContent(currentPageName);
 });

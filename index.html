@@ -369,23 +369,18 @@
                         </button>
                     </div>
                     <nav class="tabs">
-                        <button class="tab active">
-                            <span class="tab-label">All campaigns</span>
+                        <button class="tab active" data-tab-index="0">
+                            <span class="tab-label"></span>
                             <span class="tab-badge active">50</span>
                             <i data-lucide="pin" class="tab-icon"></i>
                         </button>
-                        <button class="tab">
-                            <span class="tab-label">Custom campaign view</span>
+                        <button class="tab" data-tab-index="1">
+                            <span class="tab-label"></span>
                             <span class="tab-badge">34</span>
                             <i data-lucide="pin" class="tab-icon"></i>
                         </button>
-                        <button class="tab">
-                            <span class="tab-label">All ad groups</span>
-                            <span class="tab-badge">34</span>
-                            <i data-lucide="pin" class="tab-icon"></i>
-                        </button>
-                        <button class="tab">
-                            <span class="tab-label">Custom ad group view</span>
+                        <button class="tab" data-tab-index="2">
+                            <span class="tab-label"></span>
                             <span class="tab-badge">34</span>
                             <i data-lucide="pin" class="tab-icon"></i>
                         </button>
@@ -397,35 +392,37 @@
             </header>
 
             <div class="content-area">
-                <div class="content-header">
-                    <div class="page-title">
-                        <span class="title-subtitle">Google</span>
-                        <h1 class="title-main">All campaigns</h1>
-                    </div>
-                    <div class="header-actions">
-                        <div class="select-wrapper">
-                            <i data-lucide="building-2" class="select-icon"></i>
-                            <select class="select-input">
-                                <option>Hilton</option>
-                            </select>
-                            <i data-lucide="chevron-down" class="select-chevron"></i>
+                <!-- Campaigns page content (shown only for Campaigns) -->
+                <div class="campaigns-content" id="campaigns-content">
+                    <div class="content-header">
+                        <div class="page-title">
+                            <span class="title-subtitle">Google</span>
+                            <h1 class="title-main">All campaigns</h1>
                         </div>
-                        <div class="date-input-wrapper">
-                            <i data-lucide="calendar" class="date-icon"></i>
-                            <input type="text" class="date-input" placeholder="Select date" readonly>
+                        <div class="header-actions">
+                            <div class="select-wrapper">
+                                <i data-lucide="building-2" class="select-icon"></i>
+                                <select class="select-input">
+                                    <option>Hilton</option>
+                                </select>
+                                <i data-lucide="chevron-down" class="select-chevron"></i>
+                            </div>
+                            <div class="date-input-wrapper">
+                                <i data-lucide="calendar" class="date-icon"></i>
+                                <input type="text" class="date-input" placeholder="Select date" readonly>
+                            </div>
+                            <button class="filter-btn">
+                                <i data-lucide="filter" class="btn-icon"></i>
+                                <span>Filters</span>
+                            </button>
+                            <button class="hide-graph-btn">
+                                <i data-lucide="eye-off" class="btn-icon"></i>
+                                <span>Hide graph</span>
+                            </button>
                         </div>
-                        <button class="filter-btn">
-                            <i data-lucide="filter" class="btn-icon"></i>
-                            <span>Filters</span>
-                        </button>
-                        <button class="hide-graph-btn">
-                            <i data-lucide="eye-off" class="btn-icon"></i>
-                            <span>Hide graph</span>
-                        </button>
                     </div>
-                </div>
 
-                <div class="graph-section">
+                    <div class="graph-section">
                     <div class="graph-container">
                         <div class="graph-controls">
                             <div class="graph-control-group">
@@ -570,6 +567,20 @@
                                 <tr><td><div class="td-campaign"><i data-lucide="chevron-right" class="campaign-icon"></i><div class="campaign-info"><div class="campaign-name">Campaign name</div><div class="campaign-id">02940214</div></div></div></td><td><span class="status-badge">Ad groups (2+)</span></td><td>$60,000</td><td>70,000,000</td><td>7,309</td><td>$3.96</td></tr>
                             </tbody>
                         </table>
+                    </div>
+                </div>
+                </div>
+
+                <!-- Template content for all other pages -->
+                <div class="page-template-content" id="page-template-content" style="display: none;">
+                    <div class="page-template-dialog">
+                        <div class="page-template-illustration">
+                            <img src="bull-horn-checklist-surfing-book.svg" alt="Page illustration" />
+                        </div>
+                        <div class="page-template-text">
+                            <h2 class="page-template-title" id="page-template-title">Page Name</h2>
+                            <p class="page-template-subtitle" id="page-template-subtitle">This page would show page name.</p>
+                        </div>
                     </div>
                 </div>
             </div>
