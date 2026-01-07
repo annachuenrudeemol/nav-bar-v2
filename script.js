@@ -163,7 +163,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         this.classList.add('expanded');
                     }
                     
-                    // Update chevron icon
+                    // Update chevron icon (keep light weight)
                     const chevron = this.querySelector('.submenu-item-chevron');
                     if (chevron) {
                         chevron.classList.remove('fa-chevron-right');
