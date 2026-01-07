@@ -1,4 +1,13 @@
 <!DOCTYPE html>
+<!--
+    FONT AWESOME ICON STYLES:
+    - Solid (default): Use "fas" class (e.g., <i class="fas fa-icon-name"></i>)
+    - Regular: Use "far" class (e.g., <i class="far fa-icon-name"></i>)
+    - Light: Use "fal" class (e.g., <i class="fal fa-icon-name"></i>)
+    
+    To switch an icon style, simply change "fas" to "far" or "fal" in the class attribute.
+    Example: Change <i class="fas fa-gear"></i> to <i class="far fa-gear"></i> for a regular (outlined) gear icon.
+-->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -8,7 +17,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
     <div class="app-container">
@@ -19,272 +28,204 @@
                     <img src="https://www.figma.com/api/mcp/asset/816cb885-9515-4519-9c25-d25a7bc31564" alt="Koddi Logo" class="logo-img-expanded" />
                 </div>
                 <nav class="sidebar-nav">
-                    <button class="nav-icon-btn menu-toggle-btn" aria-label="Menu">
-                        <i data-lucide="menu" class="nav-icon"></i>
+                    <button class="nav-icon-btn menu-toggle-btn" id="menu-toggle-btn" aria-label="Menu">
+                        <i class="fas fa-bars nav-icon"></i>
                     </button>
                     <div class="nav-section">
                         <button class="nav-icon-btn analytics-btn active expandable" aria-label="Analytics">
-                            <i data-lucide="trending-up" class="nav-icon"></i>
+                            <i class="fas fa-chart-line nav-icon"></i>
                             <span class="nav-label">Analytics</span>
-                            <i data-lucide="chevron-down" class="nav-chevron"></i>
+                            <i class="fas fa-chevron-down nav-chevron"></i>
                             <div class="hover-card">
                                 <div class="hover-card-header">
                                     <span class="hover-card-title">Analytics</span>
                                 </div>
                                 <div class="hover-card-content">
                                     <div class="hover-card-item active">
-                                        <i data-lucide="layout-grid" class="hover-card-icon"></i>
+                                        <i class="fas fa-th hover-card-icon"></i>
                                         <span>Campaigns</span>
                                     </div>
                                     <div class="hover-card-item">
-                                        <i data-lucide="megaphone" class="hover-card-icon"></i>
+                                        <i class="fas fa-bullhorn hover-card-icon"></i>
                                         <span>Ad groups</span>
                                     </div>
                                     <div class="hover-card-item">
-                                        <i data-lucide="building-2" class="hover-card-icon"></i>
+                                        <i class="fas fa-building hover-card-icon"></i>
                                         <span>Hotels</span>
                                     </div>
                                 </div>
                             </div>
                         </button>
-                        <div class="nav-submenu expanded">
-                            <div class="nav-submenu-item active">
-                                <div class="nav-submenu-content">
-                                    <span>Campaigns</span>
-                                </div>
+                        <!-- Submenu data stored as data attribute for right panel -->
+                        <div class="nav-submenu-data" style="display: none;">
+                            <div data-item="Campaigns" data-icon="fa-th" data-has-nested="true">
+                                <div data-nested-item="Dashboard" data-nested-icon="fa-chart-line"></div>
+                                <div data-nested-item="Create" data-nested-icon="fa-plus"></div>
                             </div>
-                            <div class="nav-submenu-item">
-                                <div class="nav-submenu-content">
-                                    <span>Ad groups</span>
-                                </div>
-                            </div>
-                            <div class="nav-submenu-item">
-                                <div class="nav-submenu-content">
-                                    <span>Hotels</span>
-                                </div>
-                            </div>
+                            <div data-item="Ad groups" data-icon="fa-bullhorn"></div>
+                            <div data-item="Hotels" data-icon="fa-building"></div>
                         </div>
                     </div>
                     <div class="nav-section">
                         <button class="nav-icon-btn reports-btn expandable" aria-label="Reports">
-                            <i data-lucide="bar-chart-3" class="nav-icon"></i>
+                            <i class="fas fa-chart-column nav-icon"></i>
                             <span class="nav-label">Reports</span>
-                            <i data-lucide="chevron-down" class="nav-chevron"></i>
+                            <i class="fas fa-chevron-down nav-chevron"></i>
                             <div class="hover-card">
                                 <div class="hover-card-header">
                                     <span class="hover-card-title">Reports</span>
                                 </div>
                                 <div class="hover-card-content">
                                     <div class="hover-card-item">
-                                        <i data-lucide="trending-up" class="hover-card-icon"></i>
+                                        <i class="fas fa-chart-line hover-card-icon"></i>
                                         <span>Performance</span>
                                     </div>
                                     <div class="hover-card-item">
-                                        <i data-lucide="dollar-sign" class="hover-card-icon"></i>
+                                        <i class="fas fa-dollar-sign hover-card-icon"></i>
                                         <span>Revenue</span>
                                     </div>
                                     <div class="hover-card-item">
-                                        <i data-lucide="target" class="hover-card-icon"></i>
+                                        <i class="fas fa-bullseye hover-card-icon"></i>
                                         <span>Conversions</span>
                                     </div>
                                 </div>
                             </div>
                         </button>
-                        <div class="nav-submenu">
-                            <div class="nav-submenu-item">
-                                <div class="nav-submenu-content">
-                                    <span>Performance</span>
-                                </div>
-                            </div>
-                            <div class="nav-submenu-item">
-                                <div class="nav-submenu-content">
-                                    <span>Revenue</span>
-                                </div>
-                            </div>
-                            <div class="nav-submenu-item">
-                                <div class="nav-submenu-content">
-                                    <span>Conversions</span>
-                                </div>
-                            </div>
+                        <div class="nav-submenu-data" style="display: none;">
+                            <div data-item="Performance" data-icon="fa-chart-line"></div>
+                            <div data-item="Revenue" data-icon="fa-dollar-sign"></div>
+                            <div data-item="Conversions" data-icon="fa-bullseye"></div>
                         </div>
                     </div>
                     <div class="nav-section">
                         <button class="nav-icon-btn settings-btn expandable" aria-label="Settings">
-                            <i data-lucide="settings" class="nav-icon"></i>
+                            <i class="fas fa-gear nav-icon"></i>
                             <span class="nav-label">Settings</span>
-                            <i data-lucide="chevron-down" class="nav-chevron"></i>
+                            <i class="fas fa-chevron-down nav-chevron"></i>
                             <div class="hover-card">
                                 <div class="hover-card-header">
                                     <span class="hover-card-title">Settings</span>
                                 </div>
                                 <div class="hover-card-content">
                                     <div class="hover-card-item">
-                                        <i data-lucide="user" class="hover-card-icon"></i>
+                                        <i class="fas fa-user hover-card-icon"></i>
                                         <span>Account</span>
                                     </div>
                                     <div class="hover-card-item">
-                                        <i data-lucide="sliders" class="hover-card-icon"></i>
+                                        <i class="fas fa-sliders hover-card-icon"></i>
                                         <span>Preferences</span>
                                     </div>
                                     <div class="hover-card-item">
-                                        <i data-lucide="bell" class="hover-card-icon"></i>
+                                        <i class="fas fa-bell hover-card-icon"></i>
                                         <span>Notifications</span>
                                     </div>
                                 </div>
                             </div>
                         </button>
-                        <div class="nav-submenu">
-                            <div class="nav-submenu-item">
-                                <div class="nav-submenu-content">
-                                    <span>Account</span>
-                                </div>
-                            </div>
-                            <div class="nav-submenu-item">
-                                <div class="nav-submenu-content">
-                                    <span>Preferences</span>
-                                </div>
-                            </div>
-                            <div class="nav-submenu-item">
-                                <div class="nav-submenu-content">
-                                    <span>Notifications</span>
-                                </div>
-                            </div>
+                        <div class="nav-submenu-data" style="display: none;">
+                            <div data-item="Account" data-icon="fa-user"></div>
+                            <div data-item="Preferences" data-icon="fa-sliders"></div>
+                            <div data-item="Notifications" data-icon="fa-bell"></div>
                         </div>
                     </div>
                     <div class="nav-section">
                         <button class="nav-icon-btn calendar-btn expandable" aria-label="Calendar">
-                            <i data-lucide="calendar" class="nav-icon"></i>
+                            <i class="fas fa-calendar nav-icon"></i>
                             <span class="nav-label">Calendar</span>
-                            <i data-lucide="chevron-down" class="nav-chevron"></i>
+                            <i class="fas fa-chevron-down nav-chevron"></i>
                             <div class="hover-card">
                                 <div class="hover-card-header">
                                     <span class="hover-card-title">Calendar</span>
                                 </div>
                                 <div class="hover-card-content">
                                     <div class="hover-card-item">
-                                        <i data-lucide="calendar-days" class="hover-card-icon"></i>
+                                        <i class="fas fa-calendar-days hover-card-icon"></i>
                                         <span>Events</span>
                                     </div>
                                     <div class="hover-card-item">
-                                        <i data-lucide="clock" class="hover-card-icon"></i>
+                                        <i class="fas fa-clock hover-card-icon"></i>
                                         <span>Schedule</span>
                                     </div>
                                     <div class="hover-card-item">
-                                        <i data-lucide="timeline" class="hover-card-icon"></i>
+                                        <i class="fas fa-timeline hover-card-icon"></i>
                                         <span>Timeline</span>
                                     </div>
                                 </div>
                             </div>
                         </button>
-                        <div class="nav-submenu">
-                            <div class="nav-submenu-item">
-                                <div class="nav-submenu-content">
-                                    <span>Events</span>
-                                </div>
-                            </div>
-                            <div class="nav-submenu-item">
-                                <div class="nav-submenu-content">
-                                    <span>Schedule</span>
-                                </div>
-                            </div>
-                            <div class="nav-submenu-item">
-                                <div class="nav-submenu-content">
-                                    <span>Timeline</span>
-                                </div>
-                            </div>
+                        <div class="nav-submenu-data" style="display: none;">
+                            <div data-item="Events" data-icon="fa-calendar-days"></div>
+                            <div data-item="Schedule" data-icon="fa-clock"></div>
+                            <div data-item="Timeline" data-icon="fa-timeline"></div>
                         </div>
                     </div>
                     <div class="nav-section">
                         <button class="nav-icon-btn security-btn expandable" aria-label="Security">
-                            <i data-lucide="shield" class="nav-icon"></i>
+                            <i class="fas fa-shield nav-icon"></i>
                             <span class="nav-label">Security</span>
-                            <i data-lucide="chevron-down" class="nav-chevron"></i>
+                            <i class="fas fa-chevron-down nav-chevron"></i>
                             <div class="hover-card">
                                 <div class="hover-card-header">
                                     <span class="hover-card-title">Security</span>
                                 </div>
                                 <div class="hover-card-content">
                                     <div class="hover-card-item">
-                                        <i data-lucide="shield-check" class="hover-card-icon"></i>
+                                        <i class="fas fa-shield-check hover-card-icon"></i>
                                         <span>Security</span>
                                     </div>
                                     <div class="hover-card-item">
-                                        <i data-lucide="file-check" class="hover-card-icon"></i>
+                                        <i class="fas fa-file-check hover-card-icon"></i>
                                         <span>Compliance</span>
                                     </div>
                                     <div class="hover-card-item">
-                                        <i data-lucide="key" class="hover-card-icon"></i>
+                                        <i class="fas fa-key hover-card-icon"></i>
                                         <span>Permissions</span>
                                     </div>
                                 </div>
                             </div>
                         </button>
-                        <div class="nav-submenu">
-                            <div class="nav-submenu-item">
-                                <div class="nav-submenu-content">
-                                    <span>Security</span>
-                                </div>
-                            </div>
-                            <div class="nav-submenu-item">
-                                <div class="nav-submenu-content">
-                                    <span>Compliance</span>
-                                </div>
-                            </div>
-                            <div class="nav-submenu-item">
-                                <div class="nav-submenu-content">
-                                    <span>Permissions</span>
-                                </div>
-                            </div>
+                        <div class="nav-submenu-data" style="display: none;">
+                            <div data-item="Security" data-icon="fa-shield-check"></div>
+                            <div data-item="Compliance" data-icon="fa-file-check"></div>
+                            <div data-item="Permissions" data-icon="fa-key"></div>
                         </div>
                     </div>
                     <div class="nav-section">
                         <button class="nav-icon-btn charts-btn expandable" aria-label="Charts">
-                            <i data-lucide="pie-chart" class="nav-icon"></i>
+                            <i class="fas fa-chart-pie nav-icon"></i>
                             <span class="nav-label">Charts</span>
-                            <i data-lucide="chevron-down" class="nav-chevron"></i>
+                            <i class="fas fa-chevron-down nav-chevron"></i>
                             <div class="hover-card">
                                 <div class="hover-card-header">
                                     <span class="hover-card-title">Charts</span>
                                 </div>
                                 <div class="hover-card-content">
                                     <div class="hover-card-item">
-                                        <i data-lucide="layout-dashboard" class="hover-card-icon"></i>
+                                        <i class="fas fa-gauge hover-card-icon"></i>
                                         <span>Overview</span>
                                     </div>
                                     <div class="hover-card-item">
-                                        <i data-lucide="activity" class="hover-card-icon"></i>
+                                        <i class="fas fa-chart-line hover-card-icon"></i>
                                         <span>Trends</span>
                                     </div>
                                     <div class="hover-card-item">
-                                        <i data-lucide="lightbulb" class="hover-card-icon"></i>
+                                        <i class="fas fa-lightbulb hover-card-icon"></i>
                                         <span>Insights</span>
                                     </div>
                                 </div>
                             </div>
                         </button>
-                        <div class="nav-submenu">
-                            <div class="nav-submenu-item">
-                                <div class="nav-submenu-content">
-                                    <span>Overview</span>
-                                </div>
-                            </div>
-                            <div class="nav-submenu-item">
-                                <div class="nav-submenu-content">
-                                    <span>Trends</span>
-                                </div>
-                            </div>
-                            <div class="nav-submenu-item">
-                                <div class="nav-submenu-content">
-                                    <span>Insights</span>
-                                </div>
-                            </div>
+                        <div class="nav-submenu-data" style="display: none;">
+                            <div data-item="Overview" data-icon="fa-gauge"></div>
+                            <div data-item="Trends" data-icon="fa-chart-line"></div>
+                            <div data-item="Insights" data-icon="fa-lightbulb"></div>
                         </div>
                     </div>
                 </nav>
             </div>
             <div class="sidebar-bottom">
                 <button class="nav-icon-btn help-btn" aria-label="Help">
-                    <i data-lucide="help-circle" class="nav-icon"></i>
+                    <i class="fas fa-circle-question nav-icon"></i>
                     <span class="nav-label">Help</span>
                     <div class="hover-card">
                         <div class="hover-card-header">
@@ -292,26 +233,26 @@
                         </div>
                         <div class="hover-card-content">
                             <div class="hover-card-item">
-                                <i data-lucide="book" class="hover-card-icon"></i>
+                                <i class="fas fa-book hover-card-icon"></i>
                                 <span>Documentation</span>
                             </div>
                             <div class="hover-card-item">
-                                <i data-lucide="headphones" class="hover-card-icon"></i>
+                                <i class="fas fa-headphones hover-card-icon"></i>
                                 <span>Support</span>
                             </div>
                             <div class="hover-card-item">
-                                <i data-lucide="help-circle" class="hover-card-icon"></i>
+                                <i class="fas fa-circle-question hover-card-icon"></i>
                                 <span>FAQ</span>
                             </div>
                         </div>
                     </div>
                 </button>
                 <button class="nav-icon-btn" aria-label="Settings">
-                    <i data-lucide="settings" class="nav-icon"></i>
+                    <i class="fas fa-gear nav-icon"></i>
                     <span class="nav-label">Settings</span>
                 </button>
                 <button class="nav-icon-btn primary create-btn" aria-label="Create">
-                    <i data-lucide="plus" class="nav-icon"></i>
+                    <i class="fas fa-plus nav-icon"></i>
                     <span class="nav-label">Create...</span>
                     <div class="hover-card create-hover-card">
                         <div class="hover-card-header">
@@ -320,7 +261,7 @@
                         <div class="hover-card-content create-hover-card-content">
                             <div class="create-hover-card-item">
                                 <div class="create-hover-card-icon-wrapper">
-                                    <i data-lucide="megaphone" class="create-hover-card-icon"></i>
+                                    <i class="fas fa-bullhorn create-hover-card-icon"></i>
                                 </div>
                                 <div class="create-hover-card-text">
                                     <div class="create-hover-card-title">Campaign</div>
@@ -329,7 +270,7 @@
                             </div>
                             <div class="create-hover-card-item">
                                 <div class="create-hover-card-icon-wrapper">
-                                    <i data-lucide="bar-chart-3" class="create-hover-card-icon"></i>
+                                    <i class="fas fa-chart-column create-hover-card-icon"></i>
                                 </div>
                                 <div class="create-hover-card-text">
                                     <div class="create-hover-card-title">Report</div>
@@ -338,7 +279,7 @@
                             </div>
                             <div class="create-hover-card-item">
                                 <div class="create-hover-card-icon-wrapper">
-                                    <i data-lucide="cloud-sun" class="create-hover-card-icon"></i>
+                                    <i class="fas fa-cloud-sun create-hover-card-icon"></i>
                                 </div>
                                 <div class="create-hover-card-text">
                                     <div class="create-hover-card-title">Forecast</div>
@@ -347,7 +288,7 @@
                             </div>
                             <div class="create-hover-card-item">
                                 <div class="create-hover-card-icon-wrapper">
-                                    <i data-lucide="handshake" class="create-hover-card-icon"></i>
+                                    <i class="fas fa-handshake create-hover-card-icon"></i>
                                 </div>
                                 <div class="create-hover-card-text">
                                     <div class="create-hover-card-title">Recommendation</div>
@@ -360,29 +301,36 @@
             </div>
         </aside>
 
+        <!-- Right Panel for Submenu Items -->
+        <aside class="submenu-panel" id="submenu-panel">
+            <div class="submenu-panel-content">
+                <div class="submenu-section-header" id="submenu-section-header">
+                    <span class="submenu-section-label">ANALYTICS</span>
+                </div>
+                <nav class="submenu-items" id="submenu-items">
+                    <!-- Submenu items will be populated dynamically -->
+                </nav>
+            </div>
+        </aside>
+
         <main class="main-content">
             <header class="header">
                 <div class="header-content">
-                    <div class="header-left">
-                        <button class="back-btn" aria-label="Back">
-                            <i data-lucide="panel-left" class="back-icon"></i>
-                        </button>
-                    </div>
                     <nav class="tabs">
                         <button class="tab active" data-tab-index="0">
                             <span class="tab-label"></span>
                             <span class="tab-badge active">50</span>
-                            <i data-lucide="pin" class="tab-icon"></i>
+                            <i class="fas fa-thumbtack tab-icon"></i>
                         </button>
                         <button class="tab" data-tab-index="1">
                             <span class="tab-label"></span>
                             <span class="tab-badge">34</span>
-                            <i data-lucide="pin" class="tab-icon"></i>
+                            <i class="fas fa-thumbtack tab-icon"></i>
                         </button>
                         <button class="tab" data-tab-index="2">
                             <span class="tab-label"></span>
                             <span class="tab-badge">34</span>
-                            <i data-lucide="pin" class="tab-icon"></i>
+                            <i class="fas fa-thumbtack tab-icon"></i>
                         </button>
                     </nav>
                     <div class="header-right">
@@ -401,22 +349,22 @@
                         </div>
                         <div class="header-actions">
                             <div class="select-wrapper">
-                                <i data-lucide="building-2" class="select-icon"></i>
+                                <i class="fas fa-building select-icon"></i>
                                 <select class="select-input">
                                     <option>Hilton</option>
                                 </select>
-                                <i data-lucide="chevron-down" class="select-chevron"></i>
+                                <i class="fas fa-chevron-down select-chevron"></i>
                             </div>
                             <div class="date-input-wrapper">
-                                <i data-lucide="calendar" class="date-icon"></i>
+                                <i class="fas fa-calendar date-icon"></i>
                                 <input type="text" class="date-input" placeholder="Select date" readonly>
                             </div>
                             <button class="filter-btn">
-                                <i data-lucide="filter" class="btn-icon"></i>
+                                <i class="fas fa-filter btn-icon"></i>
                                 <span>Filters</span>
                             </button>
                             <button class="hide-graph-btn">
-                                <i data-lucide="eye-off" class="btn-icon"></i>
+                                <i class="fas fa-eye-slash btn-icon"></i>
                                 <span>Hide graph</span>
                             </button>
                         </div>
@@ -427,22 +375,22 @@
                         <div class="graph-controls">
                             <div class="graph-control-group">
                                 <div class="graph-control-left">
-                                    <i data-lucide="filter" class="control-icon"></i>
+                                    <i class="fas fa-filter control-icon"></i>
                                     <span class="control-label">Dimension</span>
                                 </div>
                                 <div class="graph-control-right">
                                     <span class="control-value">Program type</span>
-                                    <i data-lucide="chevron-down" class="control-chevron"></i>
+                                    <i class="fas fa-chevron-down control-chevron"></i>
                                 </div>
                             </div>
                             <div class="graph-control-group">
                                 <div class="graph-control-left">
-                                    <i data-lucide="clock" class="control-icon"></i>
+                                    <i class="fas fa-clock control-icon"></i>
                                     <span class="control-label">Time frame</span>
                                 </div>
                                 <div class="graph-control-right">
                                     <span class="control-value">Default</span>
-                                    <i data-lucide="chevron-down" class="control-chevron"></i>
+                                    <i class="fas fa-chevron-down control-chevron"></i>
                                 </div>
                             </div>
                             <div class="multi-select-wrapper">
@@ -453,9 +401,9 @@
                                 </div>
                                 <div class="multi-select-actions">
                                     <button class="chip-close">
-                                        <i data-lucide="x" class="chip-icon"></i>
+                                        <i class="fas fa-xmark chip-icon"></i>
                                     </button>
-                                    <i data-lucide="chevron-down" class="select-chevron"></i>
+                                    <i class="fas fa-chevron-down select-chevron"></i>
                                 </div>
                             </div>
                         </div>
@@ -521,27 +469,27 @@
                     <div class="table-header-actions">
                         <div class="table-actions-left">
                             <button class="new-campaign-btn">
-                                <i data-lucide="plus" class="btn-icon"></i>
+                                <i class="fas fa-plus btn-icon"></i>
                                 <span>New Campaign</span>
                             </button>
                             <div class="search-wrapper">
-                                <i data-lucide="search" class="search-icon"></i>
+                                <i class="fas fa-magnifying-glass search-icon"></i>
                                 <input type="text" class="search-input" placeholder="Filter ad groups, access quick actions...">
                             </div>
                         </div>
                         <div class="table-actions-right">
                             <div class="select-wrapper small">
-                                <i data-lucide="upload" class="select-icon"></i>
+                                <i class="fas fa-upload select-icon"></i>
                                 <select class="select-input">
                                     <option>Bulk upload</option>
                                 </select>
                             </div>
                             <div class="select-wrapper small">
-                                <i data-lucide="menu" class="select-icon"></i>
+                                <i class="fas fa-bars select-icon"></i>
                                 <select class="select-input">
                                     <option>Actions</option>
                                 </select>
-                                <i data-lucide="chevron-down" class="select-chevron"></i>
+                                <i class="fas fa-chevron-down select-chevron"></i>
                             </div>
                         </div>
                     </div>
@@ -550,21 +498,21 @@
                         <table class="data-table">
                             <thead>
                                 <tr>
-                                    <th><div class="th-content"><span>Campaign name</span><div class="th-icons"><i data-lucide="arrow-up-down" class="th-icon"></i><i data-lucide="more-vertical" class="th-icon"></i></div></div></th>
-                                    <th><div class="th-content"><span>Status</span><div class="th-icons"><i data-lucide="arrow-up-down" class="th-icon"></i><i data-lucide="more-vertical" class="th-icon"></i></div></div></th>
-                                    <th><div class="th-content"><span>Budget</span><div class="th-icons"><i data-lucide="arrow-up-down" class="th-icon"></i><i data-lucide="more-vertical" class="th-icon"></i></div></div></th>
-                                    <th><div class="th-content"><span>Eligible impressions</span><div class="th-icons"><i data-lucide="arrow-up-down" class="th-icon"></i><i data-lucide="more-vertical" class="th-icon"></i></div></div></th>
-                                    <th><div class="th-content"><span>Clicks</span><div class="th-icons"><i data-lucide="arrow-up-down" class="th-icon"></i><i data-lucide="more-vertical" class="th-icon"></i></div></div></th>
-                                    <th><div class="th-content"><span>CPC</span><div class="th-icons"><i data-lucide="arrow-up-down" class="th-icon"></i><i data-lucide="more-vertical" class="th-icon"></i></div></div></th>
+                                    <th><div class="th-content"><span>Campaign name</span><div class="th-icons"><i class="fas fa-arrows-up-down th-icon"></i><i class="fas fa-ellipsis-vertical th-icon"></i></div></div></th>
+                                    <th><div class="th-content"><span>Status</span><div class="th-icons"><i class="fas fa-arrows-up-down th-icon"></i><i class="fas fa-ellipsis-vertical th-icon"></i></div></div></th>
+                                    <th><div class="th-content"><span>Budget</span><div class="th-icons"><i class="fas fa-arrows-up-down th-icon"></i><i class="fas fa-ellipsis-vertical th-icon"></i></div></div></th>
+                                    <th><div class="th-content"><span>Eligible impressions</span><div class="th-icons"><i class="fas fa-arrows-up-down th-icon"></i><i class="fas fa-ellipsis-vertical th-icon"></i></div></div></th>
+                                    <th><div class="th-content"><span>Clicks</span><div class="th-icons"><i class="fas fa-arrows-up-down th-icon"></i><i class="fas fa-ellipsis-vertical th-icon"></i></div></div></th>
+                                    <th><div class="th-content"><span>CPC</span><div class="th-icons"><i class="fas fa-arrows-up-down th-icon"></i><i class="fas fa-ellipsis-vertical th-icon"></i></div></div></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr><td><div class="td-campaign"><i data-lucide="chevron-right" class="campaign-icon"></i><div class="campaign-info"><div class="campaign-name">Campaign name</div><div class="campaign-id">02940214</div></div></div></td><td><span class="status-badge">Ad groups (2+)</span></td><td>$60,000</td><td>70,000,000</td><td>7,240</td><td>$3.96</td></tr>
-                                <tr><td><div class="td-campaign"><i data-lucide="chevron-right" class="campaign-icon"></i><div class="campaign-info"><div class="campaign-name">Campaign name</div><div class="campaign-id">02940214</div></div></div></td><td><span class="status-badge">Ad groups (2+)</span></td><td>$60,000</td><td>70,000,000</td><td>7,240</td><td>$3.96</td></tr>
-                                <tr><td><div class="td-campaign"><i data-lucide="chevron-right" class="campaign-icon"></i><div class="campaign-info"><div class="campaign-name">Campaign name</div><div class="campaign-id">02940214</div></div></div></td><td><span class="status-badge">Ad groups (2+)</span></td><td>$60,000</td><td>70,000,000</td><td>7,305</td><td>$3.96</td></tr>
-                                <tr><td><div class="td-campaign"><i data-lucide="chevron-right" class="campaign-icon"></i><div class="campaign-info"><div class="campaign-name">Campaign name</div><div class="campaign-id">02940214</div></div></div></td><td><span class="status-badge">Ad groups (2+)</span></td><td>$60,000</td><td>70,000,000</td><td>7,330</td><td>$3.96</td></tr>
-                                <tr><td><div class="td-campaign"><i data-lucide="chevron-right" class="campaign-icon"></i><div class="campaign-info"><div class="campaign-name">Campaign name</div><div class="campaign-id">02940214</div></div></div></td><td><span class="status-badge">Ad groups (2+)</span></td><td>$60,000</td><td>70,000,000</td><td>7,305</td><td>$3.96</td></tr>
-                                <tr><td><div class="td-campaign"><i data-lucide="chevron-right" class="campaign-icon"></i><div class="campaign-info"><div class="campaign-name">Campaign name</div><div class="campaign-id">02940214</div></div></div></td><td><span class="status-badge">Ad groups (2+)</span></td><td>$60,000</td><td>70,000,000</td><td>7,309</td><td>$3.96</td></tr>
+                                <tr><td><div class="td-campaign"><i class="fas fa-chevron-right campaign-icon"></i><div class="campaign-info"><div class="campaign-name">Campaign name</div><div class="campaign-id">02940214</div></div></div></td><td><span class="status-badge">Ad groups (2+)</span></td><td>$60,000</td><td>70,000,000</td><td>7,240</td><td>$3.96</td></tr>
+                                <tr><td><div class="td-campaign"><i class="fas fa-chevron-right campaign-icon"></i><div class="campaign-info"><div class="campaign-name">Campaign name</div><div class="campaign-id">02940214</div></div></div></td><td><span class="status-badge">Ad groups (2+)</span></td><td>$60,000</td><td>70,000,000</td><td>7,240</td><td>$3.96</td></tr>
+                                <tr><td><div class="td-campaign"><i class="fas fa-chevron-right campaign-icon"></i><div class="campaign-info"><div class="campaign-name">Campaign name</div><div class="campaign-id">02940214</div></div></div></td><td><span class="status-badge">Ad groups (2+)</span></td><td>$60,000</td><td>70,000,000</td><td>7,305</td><td>$3.96</td></tr>
+                                <tr><td><div class="td-campaign"><i class="fas fa-chevron-right campaign-icon"></i><div class="campaign-info"><div class="campaign-name">Campaign name</div><div class="campaign-id">02940214</div></div></div></td><td><span class="status-badge">Ad groups (2+)</span></td><td>$60,000</td><td>70,000,000</td><td>7,330</td><td>$3.96</td></tr>
+                                <tr><td><div class="td-campaign"><i class="fas fa-chevron-right campaign-icon"></i><div class="campaign-info"><div class="campaign-name">Campaign name</div><div class="campaign-id">02940214</div></div></div></td><td><span class="status-badge">Ad groups (2+)</span></td><td>$60,000</td><td>70,000,000</td><td>7,305</td><td>$3.96</td></tr>
+                                <tr><td><div class="td-campaign"><i class="fas fa-chevron-right campaign-icon"></i><div class="campaign-info"><div class="campaign-name">Campaign name</div><div class="campaign-id">02940214</div></div></div></td><td><span class="status-badge">Ad groups (2+)</span></td><td>$60,000</td><td>70,000,000</td><td>7,309</td><td>$3.96</td></tr>
                             </tbody>
                         </table>
                     </div>

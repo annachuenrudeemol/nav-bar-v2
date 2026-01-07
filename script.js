@@ -2,13 +2,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Track current active page
     let currentPageName = 'Campaigns'; // Default to Campaigns
     
-    function initIcons() {
-        if (typeof lucide !== 'undefined') {
-            lucide.createIcons();
-        }
-    }
-    initIcons();
-    setTimeout(initIcons, 100);
+    // Font Awesome icons don't need initialization - they work automatically
 
     // Function to update page content based on active page
     function updatePageContent(pageName) {
@@ -56,117 +50,227 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // Reinitialize icons after updating
-        setTimeout(initIcons, 50);
+        // Font Awesome icons don't need reinitialization
     }
 
-    // Sidebar expand/collapse toggle
+    // Right Panel functionality
     const sidebar = document.querySelector('.sidebar');
-    const menuToggleBtn = document.querySelector('.menu-toggle-btn');
-    
-    if (menuToggleBtn) {
-        menuToggleBtn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            const wasExpanded = sidebar.classList.contains('expanded');
+    const submenuPanel = document.getElementById('submenu-panel');
+    const submenuItemsContainer = document.getElementById('submenu-items');
+    const submenuSectionHeader = document.getElementById('submenu-section-header');
+    const menuToggleBtn = document.getElementById('menu-toggle-btn');
+                
+    // Function to show right panel with submenu items
+    function showSubmenuPanel(categoryName, categoryButton) {
+        // Get submenu data from the button's section
+        const navSection = categoryButton.closest('.nav-section');
+        const submenuData = navSection.querySelector('.nav-submenu-data');
+        
+        if (!submenuData) return;
+                
+        // Update section header
+        if (submenuSectionHeader) {
+            const label = submenuSectionHeader.querySelector('.submenu-section-label');
+            if (label) {
+                label.textContent = categoryName.toUpperCase();
+            }
+        }
+        
+        // Clear existing submenu items
+        if (submenuItemsContainer) {
+            submenuItemsContainer.innerHTML = '';
+        }
+        
+        // Create submenu items from data
+        const items = submenuData.querySelectorAll('[data-item]');
+        items.forEach((item, index) => {
+            const itemText = item.getAttribute('data-item');
+            const itemIcon = item.getAttribute('data-icon');
+            const hasNested = item.getAttribute('data-has-nested') === 'true';
+            const isActive = index === 0 && !hasNested; // First item is active by default, but not if it has nested items
             
-            if (!wasExpanded) {
-                // Expanding - toggle immediately
-                sidebar.classList.toggle('expanded');
-                // Sidebar is now expanded - add expanding class for delayed animation
-                sidebar.classList.add('expanding');
+            const submenuItem = document.createElement('div');
+            submenuItem.className = `submenu-item ${hasNested ? 'has-nested' : ''} ${isActive ? 'active' : ''}`;
+            
+            // Check if this item has nested items
+            const nestedItems = item.querySelectorAll('[data-nested-item]');
+            
+            if (hasNested && nestedItems.length > 0) {
+                // Create parent item with chevron - match regular item structure
+                submenuItem.innerHTML = `
+                    <div class="submenu-item-content">
+                        <span class="submenu-item-text">${itemText}</span>
+                        <i class="fas fa-chevron-right submenu-item-chevron"></i>
+                    </div>
+                `;
                 
-                // Force a reflow to ensure the expanding class is applied
-                void sidebar.offsetHeight;
+                if (submenuItemsContainer) {
+                    submenuItemsContainer.appendChild(submenuItem);
+                }
                 
-                // First, ensure all submenus are collapsed initially (even if they have expanded class in HTML)
-                // This ensures they animate in with the delay
-                document.querySelectorAll('.nav-submenu').forEach(submenu => {
-                    submenu.classList.remove('expanded');
+                // Create nested items container
+                const nestedContainer = document.createElement('div');
+                nestedContainer.className = 'submenu-nested-items';
+                
+                nestedItems.forEach((nestedItem, nestedIndex) => {
+                    const nestedText = nestedItem.getAttribute('data-nested-item');
+                    const nestedIcon = nestedItem.getAttribute('data-nested-icon');
+                    const isNestedActive = nestedIndex === 0 && index === 0; // First nested item is active by default if parent is first item
+                    
+                    const nestedItemEl = document.createElement('div');
+                    nestedItemEl.className = `submenu-nested-item ${isNestedActive ? 'active' : ''}`;
+                    nestedItemEl.innerHTML = `
+                        <div class="submenu-nested-item-content">
+                            <span class="submenu-nested-item-text">${nestedText}</span>
+                        </div>
+                    `;
+                    
+                    // Add click handler for nested item
+                    nestedItemEl.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        // Update active state for nested items only (keep parent active)
+                        document.querySelectorAll('.submenu-nested-item').forEach(i => i.classList.remove('active'));
+                        this.classList.add('active');
+                        
+                        // Keep parent item active
+                        const parentItem = this.closest('.submenu-item.has-nested');
+                        if (parentItem) {
+                            parentItem.classList.add('active');
+                        }
+                        
+                        // Update page content
+                        updatePageContent(nestedText);
+                    });
+                    
+                    nestedContainer.appendChild(nestedItemEl);
                 });
                 
-                // Show submenus for active sections with a delay for animation
-                setTimeout(() => {
-                    // Sync active state from hover cards to submenu items (only the first one found)
-                    const activeButtons = document.querySelectorAll('.nav-icon-btn.expandable[data-active-item]');
-                    if (activeButtons.length > 0) {
-                        // Only process the first active button to ensure only one page is selected
-                        const btn = activeButtons[0];
-                        const activeItemText = btn.getAttribute('data-active-item');
-                        if (activeItemText) {
-                            // Clear all active states first to ensure only one page is selected
-                            clearAllActiveStates();
-                            
-                            const navSection = btn.closest('.nav-section');
-                            if (navSection) {
-                                const submenu = navSection.querySelector('.nav-submenu');
-                                if (submenu) {
-                                    // Find matching submenu item by text
-                                    const submenuItems = submenu.querySelectorAll('.nav-submenu-item');
-                                    submenuItems.forEach(subItem => {
-                                        const subItemText = subItem.querySelector('.nav-submenu-content span')?.textContent?.trim();
-                                        if (subItemText === activeItemText.trim()) {
-                                            subItem.classList.add('active');
-                                        }
-                                    });
-                                    
-                                    // Expand the submenu and button
-                                    submenu.classList.add('expanded');
-                                    btn.classList.add('expanded');
-                                    btn.classList.add('active');
-                                }
-                            }
-                        }
-                    } else {
-                        // Check if there's already an active submenu item (from initial HTML state)
-                        const activeSubItem = document.querySelector('.nav-submenu-item.active');
-                        if (activeSubItem) {
-                            const navSection = activeSubItem.closest('.nav-section');
-                            if (navSection) {
-                                const submenu = navSection.querySelector('.nav-submenu');
-                                const activeBtn = navSection.querySelector('.nav-icon-btn.expandable');
-                                if (submenu && activeBtn) {
-                                    // Expand the submenu and button with animation delay
-                                    submenu.classList.add('expanded');
-                                    activeBtn.classList.add('expanded');
-                                    activeBtn.classList.add('active');
-                                }
+                submenuItem.appendChild(nestedContainer);
+                
+                // Add click handler for parent (expand/collapse nested items) - AFTER nested container is created
+                submenuItem.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    
+                    // Clear active states from other items
+                    document.querySelectorAll('.submenu-item').forEach(i => i.classList.remove('active'));
+                    document.querySelectorAll('.submenu-nested-item').forEach(i => i.classList.remove('active'));
+                    
+                    // Set this parent item as active
+                    this.classList.add('active');
+                    
+                    // Ensure expanded state
+                    if (!this.classList.contains('expanded')) {
+                        this.classList.add('expanded');
+                    }
+                    
+                    // Update chevron icon
+                    const chevron = this.querySelector('.submenu-item-chevron');
+                    if (chevron) {
+                        chevron.classList.remove('fa-chevron-right');
+                        chevron.classList.add('fa-chevron-down');
+                    }
+                    
+                    // Find and activate the first nested item
+                    const nestedContainer = this.querySelector('.submenu-nested-items');
+                    if (nestedContainer) {
+                        const firstNestedItem = nestedContainer.querySelector('.submenu-nested-item');
+                        if (firstNestedItem) {
+                            firstNestedItem.classList.add('active');
+                            const firstNestedText = firstNestedItem.querySelector('.submenu-nested-item-text')?.textContent;
+                            if (firstNestedText) {
+                                updatePageContent(firstNestedText);
                             }
                         }
                     }
-                    
-                    // Remove expanding class after animation completes
-                    setTimeout(() => {
-                        sidebar.classList.remove('expanding');
-                    }, 600); // Wait for transition to complete (0.05s delay + 0.3s transition + 0.25s submenu delay)
-                }, 50); // Small delay to ensure expanding class is applied
+                });
+                
+                // Expand by default if it's the first item and set as active
+                if (index === 0) {
+                    submenuItem.classList.add('expanded');
+                    submenuItem.classList.add('active');
+                    const chevron = submenuItem.querySelector('.submenu-item-chevron');
+                    if (chevron) {
+                        chevron.classList.remove('fa-chevron-right');
+                        chevron.classList.add('fa-chevron-down');
+                    }
+                    // Activate first nested item
+                    const firstNestedItem = nestedContainer.querySelector('.submenu-nested-item');
+                    if (firstNestedItem) {
+                        firstNestedItem.classList.add('active');
+                        const firstNestedText = firstNestedItem.querySelector('.submenu-nested-item-text')?.textContent;
+                        if (firstNestedText) {
+                            updatePageContent(firstNestedText);
+                        }
+                    }
+                }
             } else {
-                // Sidebar is now collapsing - add collapsing class for delayed animation
-                sidebar.classList.add('collapsing');
-                
-                // Force a reflow to ensure the collapsing class is applied
-                void sidebar.offsetHeight;
-                
-                // Hide all submenus first
-                document.querySelectorAll('.nav-submenu').forEach(submenu => {
-                    submenu.classList.remove('expanded');
-                });
-                document.querySelectorAll('.nav-icon-btn.expandable').forEach(btn => {
-                    btn.classList.remove('expanded');
-                });
-                
-                // Delay before starting the collapse animation
-                setTimeout(() => {
-                    sidebar.classList.remove('expanded');
+                // Regular item without nested items
+                submenuItem.innerHTML = `
+                    <div class="submenu-item-content">
+                        <span class="submenu-item-text">${itemText}</span>
+                    </div>
+                `;
+                                    
+                // Add click handler
+                submenuItem.addEventListener('click', function() {
+                    // Update active state
+                    document.querySelectorAll('.submenu-item').forEach(i => i.classList.remove('active'));
+                    document.querySelectorAll('.submenu-nested-item').forEach(i => i.classList.remove('active'));
+                    this.classList.add('active');
                     
-                    // Remove collapsing class after animation completes
-                    setTimeout(() => {
-                        sidebar.classList.remove('collapsing');
-                    }, 350);
-                }, 50); // Delay before collapse animation starts
+                    // Update page content
+                    updatePageContent(itemText);
+                });
+                
+                if (submenuItemsContainer) {
+                    submenuItemsContainer.appendChild(submenuItem);
+                }
             }
+        });
+        
+        // Show the panel
+        if (submenuPanel) {
+            submenuPanel.classList.add('visible');
+        }
+    }
+    
+    // Function to hide right panel
+    function hideSubmenuPanel() {
+        if (submenuPanel) {
+            submenuPanel.classList.remove('visible');
+                                }
+                            }
+    
+    
+    // Hamburger toggle - shows/hides right panel (sidebar stays at 64px)
+    if (menuToggleBtn) {
+        menuToggleBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const isPanelVisible = submenuPanel && submenuPanel.classList.contains('visible');
             
-            // Reinitialize icons after toggle to update chevron rotations
-            setTimeout(initIcons, 100);
+            if (isPanelVisible) {
+                // Hide right panel
+                hideSubmenuPanel();
+            } else {
+                // Show right panel - if there's an active category, show its submenu
+                const activeButton = sidebar.querySelector('.nav-icon-btn.expandable.active');
+                if (activeButton) {
+                    const categoryName = activeButton.querySelector('.nav-label')?.textContent || 
+                                         activeButton.getAttribute('aria-label') || 
+                                         'Analytics';
+                    showSubmenuPanel(categoryName, activeButton);
+                } else {
+                    // If no active category, activate the first one (Analytics) by default
+                    const firstButton = sidebar.querySelector('.nav-icon-btn.expandable');
+                    if (firstButton) {
+                        firstButton.classList.add('active');
+                        const categoryName = firstButton.querySelector('.nav-label')?.textContent || 
+                                             firstButton.getAttribute('aria-label') || 
+                                             'Analytics';
+                        showSubmenuPanel(categoryName, firstButton);
+                    }
+                }
+            }
         });
     }
 
@@ -209,9 +313,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const expandableButtons = document.querySelectorAll('.nav-icon-btn.expandable');
     expandableButtons.forEach(button => {
         button.addEventListener('click', function(e) {
-            if (!sidebar.classList.contains('expanded')) {
-                // When collapsed, navigate to the first item in the hover card
                 e.stopPropagation();
+            
+            const isPanelVisible = submenuPanel && submenuPanel.classList.contains('visible');
+            
+            if (!isPanelVisible) {
+                // When right panel is not visible, use hover card functionality
                 clearAllActiveStates();
                 
                 // Find the first hover card item
@@ -222,7 +329,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         // Set the first item as active
                         firstItem.classList.add('active');
                         
-                        // Store which item should be active so it persists when sidebar expands
+                        // Store which item should be active
                         const span = firstItem.querySelector('span');
                         const itemText = span?.textContent || '';
                         this.setAttribute('data-active-item', itemText);
@@ -241,65 +348,42 @@ document.addEventListener('DOMContentLoaded', function() {
                 this.classList.add('show-hover-card');
                 return;
             }
-            e.stopPropagation();
-            const navSection = this.closest('.nav-section');
-            if (!navSection) return;
             
-            const submenu = navSection.querySelector('.nav-submenu');
-            if (!submenu) return;
+            // When right panel is visible, update it with clicked category
+            clearAllActiveStates();
+            this.classList.add('active');
             
-            const isExpanded = submenu.classList.contains('expanded');
+            // Get category name from nav-label or aria-label
+            const categoryName = this.querySelector('.nav-label')?.textContent || 
+                                 this.getAttribute('aria-label') || 
+                                 'Menu';
             
-            // Check if any submenu item in this section is active
-            const hasActiveItem = submenu.querySelector('.nav-submenu-item.active') !== null;
+            // Show right panel with submenu items
+            showSubmenuPanel(categoryName, this);
             
-            // Don't clear active states - keep the selected page active
-            // Don't set the button as active - it's just a folder
-            
-            // Only allow collapsing if no items are active in this section
-            if (!isExpanded) {
-                // Always allow expanding
-                submenu.classList.add('expanded');
-                this.classList.add('expanded');
-            } else if (!hasActiveItem) {
-                // Only allow collapsing if no items are active
-                submenu.classList.remove('expanded');
-                this.classList.remove('expanded');
-            }
-            // If hasActiveItem is true, do nothing (prevent collapse)
-            
-            // Update chevron icon
-            setTimeout(initIcons, 50);
+            // Set first submenu item as active and update page
+            setTimeout(() => {
+                const firstSubmenuItem = submenuItemsContainer?.querySelector('.submenu-item');
+                if (firstSubmenuItem) {
+                    // Check if it has nested items
+                    const firstNestedItem = firstSubmenuItem.querySelector('.submenu-nested-item.active');
+                    if (firstNestedItem) {
+                        const nestedItemText = firstNestedItem.querySelector('.submenu-nested-item-text')?.textContent;
+                        if (nestedItemText) {
+                            updatePageContent(nestedItemText);
+                        }
+                    } else {
+                        const firstItemText = firstSubmenuItem.querySelector('.submenu-item-text')?.textContent;
+                        if (firstItemText) {
+                            updatePageContent(firstItemText);
+                        }
+                    }
+                }
+            }, 0);
         });
     });
 
-    // Submenu item clicks
-    document.querySelectorAll('.nav-submenu-item').forEach(item => {
-        item.addEventListener('click', function(e) {
-            e.stopPropagation();
-            const navSection = this.closest('.nav-section');
-            const submenu = navSection.querySelector('.nav-submenu');
-            const parentButton = navSection.querySelector('.nav-icon-btn.expandable');
-            
-            // Clear all active states first
-            clearAllActiveStates();
-            
-            // Add active to clicked submenu item
-            this.classList.add('active');
-            
-            // Make parent button active so it shows as selected (blue) when a child page is selected
-            if (parentButton) {
-                parentButton.classList.add('active');
-            }
-            
-            // Get page name and update content
-            const pageNameSpan = this.querySelector('.nav-submenu-content span');
-            const pageName = pageNameSpan ? pageNameSpan.textContent.trim() : '';
-            if (pageName) {
-                updatePageContent(pageName);
-            }
-        });
-    });
+    // Submenu items are now handled in showSubmenuPanel function above
 
     // Sidebar navigation icon buttons (for non-expandable items)
     const navIconButtons = document.querySelectorAll('.nav-icon-btn:not(.expandable)');
