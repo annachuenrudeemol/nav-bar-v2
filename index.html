@@ -362,30 +362,42 @@
                         <p class="page-description" id="page-description">Page description would go here.</p>
                     </div>
 
-                    <!-- Version Select -->
-                    <div class="version-select-wrapper">
-                        <button class="version-select" id="version-select">
-                            <span class="version-select-text">Click to expand</span>
-                            <i class="fas fa-chevron-down version-select-chevron"></i>
-                        </button>
-                        <div class="version-select-dropdown" id="version-dropdown">
-                            <div class="version-select-header">
-                                <span class="version-select-header-text">Test out iterations</span>
+                    <!-- Version Controls -->
+                    <div class="version-controls">
+                        <!-- Version Select -->
+                        <div class="version-select-wrapper">
+                            <button class="version-select" id="version-select">
+                                <span class="version-select-text">Click to expand</span>
+                                <i class="fas fa-chevron-down version-select-chevron"></i>
+                            </button>
+                            <div class="version-select-dropdown" id="version-dropdown">
+                                <div class="version-select-header">
+                                    <span class="version-select-header-text">Test out iterations</span>
+                                </div>
+                                <div class="version-select-options">
+                                    <div class="version-select-option active" data-value="Click to expand">
+                                        <span class="version-select-option-text">Click to expand</span>
+                                        <span class="version-select-option-label">V1</span>
+                                    </div>
+                                    <div class="version-select-option" data-value="Hover to expand">
+                                        <span class="version-select-option-text">Hover to expand</span>
+                                        <span class="version-select-option-label">V2</span>
+                                    </div>
+                                    <div class="version-select-option" data-value="Click to navigate">
+                                        <span class="version-select-option-text">Click to navigate</span>
+                                        <span class="version-select-option-label">V3</span>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="version-select-options">
-                                <div class="version-select-option active" data-value="Click to expand">
-                                    <span class="version-select-option-text">Click to expand</span>
-                                    <span class="version-select-option-label">V1</span>
-                                </div>
-                                <div class="version-select-option" data-value="Hover to expand">
-                                    <span class="version-select-option-text">Hover to expand</span>
-                                    <span class="version-select-option-label">V2</span>
-                                </div>
-                                <div class="version-select-option" data-value="Click to navigate">
-                                    <span class="version-select-option-text">Click to navigate</span>
-                                    <span class="version-select-option-label">V3</span>
-                                </div>
-                            </div>
+                        </div>
+                        
+                        <!-- Create Button Position Toggle -->
+                        <div class="toggle-wrapper">
+                            <span class="toggle-label">Create button:</span>
+                            <button class="position-toggle" id="create-position-toggle">
+                                <span class="toggle-option active" data-position="bottom">Bottom</span>
+                                <span class="toggle-option" data-position="top">Top</span>
+                            </button>
                         </div>
                     </div>
 

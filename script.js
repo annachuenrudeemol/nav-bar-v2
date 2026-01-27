@@ -1012,6 +1012,34 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
+    // Create Button Position Toggle
+    const positionToggle = document.getElementById('create-position-toggle');
+    if (positionToggle) {
+        const toggleOptions = positionToggle.querySelectorAll('.toggle-option');
+        const appContainer = document.querySelector('.app-container');
+        
+        positionToggle.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const clickedOption = e.target.closest('.toggle-option');
+            if (!clickedOption) return;
+            
+            const position = clickedOption.getAttribute('data-position');
+            
+            // Update active state
+            toggleOptions.forEach(opt => opt.classList.remove('active'));
+            clickedOption.classList.add('active');
+            
+            // Update app container class
+            if (appContainer) {
+                if (position === 'top') {
+                    appContainer.classList.add('create-top');
+                } else {
+                    appContainer.classList.remove('create-top');
+                }
+            }
+        });
+    }
+    
     // Initialize with Click to expand
     switchNavVersion('Click to expand');
 });
