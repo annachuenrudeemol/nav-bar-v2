@@ -637,7 +637,10 @@ document.addEventListener('DOMContentLoaded', function() {
         let tooltipTimeout;
         
         button.addEventListener('mouseenter', () => {
-            if (currentNavVersion === 'Hover to expand') {
+            const isPanelVisible = submenuPanel && submenuPanel.classList.contains('visible');
+            // Show tooltip for V2 always, or V3 when panel is expanded
+            if (currentNavVersion === 'Hover to expand' || 
+                (currentNavVersion === 'Click to navigate' && isPanelVisible)) {
                 // Show tooltip with delay
                 tooltipTimeout = setTimeout(() => {
                     button.classList.add('show-tooltip');
@@ -646,7 +649,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         button.addEventListener('mouseleave', () => {
-            if (currentNavVersion === 'Hover to expand') {
+            if (currentNavVersion === 'Hover to expand' || currentNavVersion === 'Click to navigate') {
                 clearTimeout(tooltipTimeout);
                 button.classList.remove('show-tooltip');
             }
@@ -675,6 +678,15 @@ document.addEventListener('DOMContentLoaded', function() {
             function cancelHide() {
                 clearTimeout(hideTimeout);
             }
+            
+            function hideCardImmediately() {
+                clearTimeout(showTimeout);
+                clearTimeout(hideTimeout);
+                button.classList.remove('show-hover-card');
+            }
+            
+            // Hide hover card immediately when button is clicked
+            button.addEventListener('click', hideCardImmediately);
             
             button.addEventListener('mouseenter', () => {
                 const isPanelVisible = submenuPanel && submenuPanel.classList.contains('visible');
@@ -732,11 +744,47 @@ document.addEventListener('DOMContentLoaded', function() {
                     clearAllActiveStates();
                     button.classList.add('active');
                     
-                    // If panel is visible, update it too
+                    const categoryName = button.getAttribute('aria-label') || 'Menu';
                     const isPanelVisible = submenuPanel && submenuPanel.classList.contains('visible');
-                    if (isPanelVisible) {
-                        const categoryName = button.getAttribute('aria-label') || 'Menu';
+                    
+                    // For V3, open panel if collapsed
+                    if (currentNavVersion === 'Click to navigate' && !isPanelVisible) {
                         showSubmenuPanel(categoryName, button);
+                    } else if (isPanelVisible) {
+                        showSubmenuPanel(categoryName, button);
+                    }
+                    
+                    // After panel is shown, find and select the correct submenu item
+                    if (pageName && submenuItemsContainer) {
+                        // Clear all active states in submenu
+                        submenuItemsContainer.querySelectorAll('.submenu-item').forEach(i => i.classList.remove('active'));
+                        submenuItemsContainer.querySelectorAll('.submenu-nested-item').forEach(i => i.classList.remove('active'));
+                        
+                        // Find and activate the matching item
+                        submenuItemsContainer.querySelectorAll('.submenu-item').forEach(submenuItem => {
+                            const itemText = submenuItem.querySelector('.submenu-item-text')?.textContent;
+                            if (itemText === pageName) {
+                                submenuItem.classList.add('active');
+                            }
+                        });
+                        
+                        // Also check nested items
+                        submenuItemsContainer.querySelectorAll('.submenu-nested-item').forEach(nestedItem => {
+                            const nestedText = nestedItem.querySelector('.submenu-nested-item-text')?.textContent;
+                            if (nestedText === pageName) {
+                                nestedItem.classList.add('active');
+                                // Also expand the parent
+                                const parentItem = nestedItem.closest('.submenu-item');
+                                if (parentItem) {
+                                    parentItem.classList.add('expanded');
+                                    const chevron = parentItem.querySelector('.submenu-item-chevron');
+                                    if (chevron) {
+                                        chevron.classList.remove('fa-chevron-right');
+                                        chevron.classList.add('fa-chevron-down');
+                                    }
+                                }
+                            }
+                        });
                     }
                 });
             });
