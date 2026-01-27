@@ -242,12 +242,10 @@ body {
 /* Active state: light blue background with stroke */
 .nav-icon-btn.active:not(.menu-toggle-btn):not(.primary) {
     background-color: var(--themes-brand-primary-lightest);
-    border: 1px solid var(--themes-brand-primary-lighter);
 }
 
 .nav-icon-btn.active:hover:not(.menu-toggle-btn):not(.primary) {
     background-color: var(--themes-brand-primary-lightest);
-    border: 1px solid var(--themes-brand-primary-lighter);
 }
 
 .nav-icon-btn.primary { background-color: var(--themes-brand-primary); }
