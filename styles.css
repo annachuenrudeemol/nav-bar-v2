@@ -1816,6 +1816,18 @@ body {
     gap: 0;
 }
 
+/* Create hover card shows BELOW the button when at top position */
+.app-container.create-top .create-hover-card {
+    bottom: auto;
+    top: calc(100% + var(--spacing-2));
+    left: 0;
+    transform: translateY(-8px);
+}
+
+.app-container.create-top .nav-icon-btn.show-hover-card .create-hover-card {
+    transform: translateY(0);
+}
+
 /* ==========================================
    NAV VERSION STYLES
    ========================================== */
