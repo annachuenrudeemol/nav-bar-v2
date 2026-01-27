@@ -524,6 +524,22 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+    
+    // Click outside to close panel (for Click to expand version)
+    document.addEventListener('click', function(e) {
+        if (currentNavVersion === 'Click to expand') {
+            const isPanelVisible = submenuPanel && submenuPanel.classList.contains('visible');
+            if (isPanelVisible) {
+                // Check if click is outside sidebar and submenu panel
+                const clickedInsideSidebar = sidebar && sidebar.contains(e.target);
+                const clickedInsidePanel = submenuPanel && submenuPanel.contains(e.target);
+                
+                if (!clickedInsideSidebar && !clickedInsidePanel) {
+                    hideSubmenuPanel();
+                }
+            }
+        }
+    });
 
     // Helper function to clear all active states
     function clearAllActiveStates() {
@@ -595,7 +611,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
-            // Click to expand behavior
+            // Click to navigate: Navigate to first page AND open panel
+            if (currentNavVersion === 'Click to navigate') {
+                clearAllActiveStates();
+                this.classList.add('active');
+                updatePageContent(firstPageName);
+                showSubmenuPanel(categoryName, this);
+                return;
+            }
+            
+            // Click to expand behavior (V1)
             clearAllActiveStates();
             this.classList.add('active');
             
@@ -652,26 +677,29 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             button.addEventListener('mouseenter', () => {
-                if (currentNavVersion === 'Click to expand') {
+                const isPanelVisible = submenuPanel && submenuPanel.classList.contains('visible');
+                // Show hover cards for V1 always, or V3 when panel is collapsed
+                if (currentNavVersion === 'Click to expand' || 
+                    (currentNavVersion === 'Click to navigate' && !isPanelVisible)) {
                     cancelHide();
                     showCard();
                 }
             });
             
             button.addEventListener('mouseleave', () => {
-                if (currentNavVersion === 'Click to expand') {
+                if (currentNavVersion === 'Click to expand' || currentNavVersion === 'Click to navigate') {
                     clearTimeout(showTimeout);
                     scheduleHide();
                 }
             });
             
             hoverCard.addEventListener('mouseenter', () => {
-                if (currentNavVersion === 'Click to expand') {
+                if (currentNavVersion === 'Click to expand' || currentNavVersion === 'Click to navigate') {
                     cancelHide();
                 }
             });
             hoverCard.addEventListener('mouseleave', () => {
-                if (currentNavVersion === 'Click to expand') {
+                if (currentNavVersion === 'Click to expand' || currentNavVersion === 'Click to navigate') {
                     clearTimeout(showTimeout);
                     button.classList.remove('show-hover-card');
                 }
@@ -778,7 +806,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Remove all version classes first
         if (appContainer) {
-            appContainer.classList.remove('nav-version-1', 'nav-version-2');
+            appContainer.classList.remove('nav-version-1', 'nav-version-2', 'nav-version-3');
         }
         
         // Close submenu panel when switching versions
@@ -805,6 +833,17 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             hoverCards.forEach(card => {
                 card.style.display = 'none';
+            });
+        } else if (version === 'Click to navigate') {
+            // Click to navigate: Hamburger menu, click navigates AND opens panel, hover cards enabled
+            if (appContainer) {
+                appContainer.classList.add('nav-version-3');
+            }
+            if (menuToggleBtn) {
+                menuToggleBtn.style.display = '';
+            }
+            hoverCards.forEach(card => {
+                card.style.display = '';
             });
         }
     }
