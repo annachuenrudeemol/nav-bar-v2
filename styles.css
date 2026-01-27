@@ -1795,49 +1795,25 @@ body {
    CREATE BUTTON TOP POSITION
    ========================================== */
 
-/* Base styles when create button is at top */
-.app-container.create-top .create-btn {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-}
-
-/* Remove all gaps in sidebar-top */
+/* When create button is at top, sidebar-top has 24px gap between groups */
 .app-container.create-top .sidebar-top {
-    gap: 0 !important;
+    gap: 24px !important;
 }
 
-/* Remove spacing from hamburger nav container */
+/* The hamburger nav contains both hamburger and plus button with 4px gap */
 .app-container.create-top .sidebar-nav:first-child {
-    margin: 0 !important;
-    padding: 0 !important;
+    gap: 4px !important;
 }
 
-/* V1/V3 (with hamburger): Plus 4px below hamburger, 24px above icons */
-.app-container.create-top.nav-version-1 .create-btn,
-.app-container.create-top.nav-version-3 .create-btn {
-    /* hamburger is at 16px, height 36px, ends at 52px. Plus 4px gap = 56px */
-    top: 56px !important;
-    /* DEBUG: Red outline to verify CSS is applied */
-    outline: 2px solid red !important;
+/* Reset any position styles on create button when at top */
+.app-container.create-top .create-btn {
+    position: static !important;
+    transform: none !important;
 }
 
-.app-container.create-top.nav-version-1 .sidebar-nav.main-nav,
-.app-container.create-top.nav-version-3 .sidebar-nav.main-nav {
-    /* Push icons down: 4px (gap before plus) + 36px (plus) + 24px (gap after) = 64px extra */
-    margin-top: 64px !important;
-    /* DEBUG: Blue outline to verify CSS is applied */
-    outline: 2px solid blue !important;
-}
-
-/* V2 (no hamburger): Plus at top, 24px above icons */
-.app-container.create-top.nav-version-2 .create-btn {
-    top: 12px !important;
-}
-
-.app-container.create-top.nav-version-2 .sidebar-nav.main-nav {
-    /* Space for: 36px plus + 24px gap = 60px */
-    margin-top: 60px !important;
+/* For V2 (no hamburger), the create button is alone in the first nav */
+.app-container.create-top.nav-version-2 .sidebar-nav:first-child {
+    gap: 0;
 }
 
 /* ==========================================

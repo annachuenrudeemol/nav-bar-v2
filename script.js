@@ -1017,6 +1017,13 @@ document.addEventListener('DOMContentLoaded', function() {
     if (positionToggle) {
         const toggleOptions = positionToggle.querySelectorAll('.toggle-option');
         const appContainer = document.querySelector('.app-container');
+        const createBtn = document.querySelector('.create-btn');
+        const sidebarBottom = document.querySelector('.sidebar-bottom');
+        const sidebarTop = document.querySelector('.sidebar-top');
+        const hamburgerNav = sidebarTop ? sidebarTop.querySelector('.sidebar-nav:first-child') : null;
+        
+        // Store original parent for returning button to bottom
+        const originalParent = createBtn ? createBtn.parentElement : null;
         
         positionToggle.addEventListener('click', function(e) {
             e.stopPropagation();
@@ -1029,12 +1036,20 @@ document.addEventListener('DOMContentLoaded', function() {
             toggleOptions.forEach(opt => opt.classList.remove('active'));
             clickedOption.classList.add('active');
             
-            // Update app container class
-            if (appContainer) {
+            // Update app container class and move button
+            if (appContainer && createBtn) {
                 if (position === 'top') {
                     appContainer.classList.add('create-top');
+                    // Move create button into hamburger nav (or create a group)
+                    if (hamburgerNav) {
+                        hamburgerNav.appendChild(createBtn);
+                    }
                 } else {
                     appContainer.classList.remove('create-top');
+                    // Move create button back to sidebar-bottom
+                    if (sidebarBottom) {
+                        sidebarBottom.appendChild(createBtn);
+                    }
                 }
             }
         });
