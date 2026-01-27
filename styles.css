@@ -1816,14 +1816,18 @@ body {
 /* V1/V3 (with hamburger): Plus 4px below hamburger, 24px above icons */
 .app-container.create-top.nav-version-1 .create-btn,
 .app-container.create-top.nav-version-3 .create-btn {
-    /* 16px sidebar padding + 36px hamburger + 4px gap */
+    /* hamburger is at 16px, height 36px, ends at 52px. Plus 4px gap = 56px */
     top: 56px !important;
+    /* DEBUG: Red outline to verify CSS is applied */
+    outline: 2px solid red !important;
 }
 
 .app-container.create-top.nav-version-1 .sidebar-nav.main-nav,
 .app-container.create-top.nav-version-3 .sidebar-nav.main-nav {
-    /* Space for: 4px gap + 36px plus + 24px gap = 64px */
+    /* Push icons down: 4px (gap before plus) + 36px (plus) + 24px (gap after) = 64px extra */
     margin-top: 64px !important;
+    /* DEBUG: Blue outline to verify CSS is applied */
+    outline: 2px solid blue !important;
 }
 
 /* V2 (no hamburger): Plus at top, 24px above icons */
