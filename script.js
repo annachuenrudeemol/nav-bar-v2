@@ -65,6 +65,63 @@ document.addEventListener('DOMContentLoaded', function() {
             submenuItemsContainer.innerHTML = '';
         }
         
+        // Special case for Overview - show workflow customization panel
+        if (categoryName === 'Overview') {
+            if (submenuItemsContainer) {
+                submenuItemsContainer.innerHTML = `
+                    <div class="overview-panel">
+                        <div class="overview-header">
+                            <div class="overview-title">Customize your workflow</div>
+                            <div class="overview-description">This changes what your workflow looks like.</div>
+                        </div>
+                        <div class="workflow-options">
+                            <div class="workflow-option active" data-workflow="tile">
+                                <div class="workflow-preview tile-preview">
+                                    <div class="preview-tile"></div>
+                                </div>
+                                <div class="workflow-text">
+                                    <div class="workflow-name">Tile</div>
+                                    <div class="workflow-desc">Best for blabla workflow.</div>
+                                </div>
+                            </div>
+                            <div class="workflow-option" data-workflow="panel">
+                                <div class="workflow-preview panel-preview">
+                                    <div class="preview-panel"></div>
+                                </div>
+                                <div class="workflow-text">
+                                    <div class="workflow-name">Panel</div>
+                                    <div class="workflow-desc">Best for blabla workflow.</div>
+                                </div>
+                            </div>
+                            <div class="workflow-option" data-workflow="editor">
+                                <div class="workflow-preview editor-preview">
+                                    <div class="preview-editor"></div>
+                                </div>
+                                <div class="workflow-text">
+                                    <div class="workflow-name">Editor</div>
+                                    <div class="workflow-desc">Best for blabla workflow.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // Add click handlers for workflow options
+                submenuItemsContainer.querySelectorAll('.workflow-option').forEach(option => {
+                    option.addEventListener('click', function() {
+                        submenuItemsContainer.querySelectorAll('.workflow-option').forEach(o => o.classList.remove('active'));
+                        this.classList.add('active');
+                    });
+                });
+            }
+            
+            if (submenuPanel) {
+                submenuPanel.classList.add('visible');
+            }
+            updatePageContent(categoryName);
+            return;
+        }
+        
         // If no submenu data or empty, just show the panel with the category name
         if (!submenuData) {
             if (submenuPanel) {
@@ -258,6 +315,62 @@ document.addEventListener('DOMContentLoaded', function() {
             submenuItemsContainer.innerHTML = '';
         }
         
+        // Special case for Overview - show workflow customization panel
+        if (categoryName === 'Overview') {
+            if (submenuItemsContainer) {
+                submenuItemsContainer.innerHTML = `
+                    <div class="overview-panel">
+                        <div class="overview-header">
+                            <div class="overview-title">Customize your workflow</div>
+                            <div class="overview-description">This changes what your workflow looks like.</div>
+                        </div>
+                        <div class="workflow-options">
+                            <div class="workflow-option active" data-workflow="tile">
+                                <div class="workflow-preview tile-preview">
+                                    <div class="preview-tile"></div>
+                                </div>
+                                <div class="workflow-text">
+                                    <div class="workflow-name">Tile</div>
+                                    <div class="workflow-desc">Best for blabla workflow.</div>
+                                </div>
+                            </div>
+                            <div class="workflow-option" data-workflow="panel">
+                                <div class="workflow-preview panel-preview">
+                                    <div class="preview-panel"></div>
+                                </div>
+                                <div class="workflow-text">
+                                    <div class="workflow-name">Panel</div>
+                                    <div class="workflow-desc">Best for blabla workflow.</div>
+                                </div>
+                            </div>
+                            <div class="workflow-option" data-workflow="editor">
+                                <div class="workflow-preview editor-preview">
+                                    <div class="preview-editor"></div>
+                                </div>
+                                <div class="workflow-text">
+                                    <div class="workflow-name">Editor</div>
+                                    <div class="workflow-desc">Best for blabla workflow.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // Add click handlers for workflow options
+                submenuItemsContainer.querySelectorAll('.workflow-option').forEach(option => {
+                    option.addEventListener('click', function() {
+                        submenuItemsContainer.querySelectorAll('.workflow-option').forEach(o => o.classList.remove('active'));
+                        this.classList.add('active');
+                    });
+                });
+            }
+            
+            if (submenuPanel) {
+                submenuPanel.classList.add('visible');
+            }
+            return;
+        }
+        
         // If no submenu data or empty, just show the panel with the category name
         if (!submenuData) {
             if (submenuPanel) {
@@ -421,6 +534,41 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Helper function to get the first page name from a category's submenu data
+    function getFirstPageInCategory(categoryButton) {
+        const navSection = categoryButton.closest('.nav-section');
+        let submenuData = null;
+        
+        if (navSection) {
+            submenuData = navSection.querySelector('.nav-submenu-data');
+        } else {
+            // For bottom section items like Tools & Settings
+            submenuData = categoryButton.nextElementSibling;
+            if (submenuData && !submenuData.classList.contains('nav-submenu-data')) {
+                submenuData = null;
+            }
+        }
+        
+        if (submenuData) {
+            const firstItem = submenuData.querySelector('[data-item]');
+            if (firstItem) {
+                // Check if first item has nested items
+                const hasNested = firstItem.getAttribute('data-has-nested') === 'true';
+                const firstNestedItem = firstItem.querySelector('[data-nested-item]');
+                
+                if (hasNested && firstNestedItem) {
+                    // Return the first nested item's name
+                    return firstNestedItem.getAttribute('data-nested-item');
+                }
+                // Return the first item's name
+                return firstItem.getAttribute('data-item');
+            }
+        }
+        
+        // Fallback to category name if no submenu items
+        return categoryButton.getAttribute('aria-label') || 'Menu';
+    }
+
     // Expandable nav sections
     const expandableButtons = document.querySelectorAll('.nav-icon-btn.expandable');
     expandableButtons.forEach(button => {
@@ -433,12 +581,13 @@ document.addEventListener('DOMContentLoaded', function() {
             
             const isPanelVisible = submenuPanel && submenuPanel.classList.contains('visible');
             const categoryName = this.getAttribute('aria-label') || 'Menu';
+            const firstPageName = getFirstPageInCategory(this);
             
             // Hover to expand: Always switch pages on click
             if (currentNavVersion === 'Hover to expand') {
                 clearAllActiveStates();
                 this.classList.add('active');
-                updatePageContent(categoryName);
+                updatePageContent(firstPageName);
                 // Update the submenu panel to show this category
                 if (isPanelVisible) {
                     showSubmenuPanel(categoryName, this);
@@ -446,28 +595,36 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
-            // Click to expand behavior
-            if (isPanelVisible) {
-                // Just show the category in the panel - don't change the page yet
-                // Keep current page content, just update which category is shown in panel
-                
-                // Update visual active state on buttons (for panel navigation)
-                document.querySelectorAll('.nav-icon-btn.expandable').forEach(btn => {
-                    btn.classList.remove('panel-active');
-                });
-                this.classList.add('panel-active');
-                
-                // Show submenu panel without changing the active page
-                showSubmenuPanelWithoutNavigation(categoryName, this);
-            } else {
-                // Panel is closed - set this as active and update page
-                clearAllActiveStates();
-                this.classList.add('active');
-                updatePageContent(categoryName);
+            // Click to expand behavior - always navigate to first page and update panel
+            clearAllActiveStates();
+            this.classList.add('active');
+            showSubmenuPanel(categoryName, this);
+            
+            if (!isPanelVisible) {
+                // Panel was closed, now it's open
             }
         });
         
-        // Hover card functionality for nav buttons
+        // Tooltip functionality for Hover to expand version
+        let tooltipTimeout;
+        
+        button.addEventListener('mouseenter', () => {
+            if (currentNavVersion === 'Hover to expand') {
+                // Show tooltip with delay
+                tooltipTimeout = setTimeout(() => {
+                    button.classList.add('show-tooltip');
+                }, 400);
+            }
+        });
+        
+        button.addEventListener('mouseleave', () => {
+            if (currentNavVersion === 'Hover to expand') {
+                clearTimeout(tooltipTimeout);
+                button.classList.remove('show-tooltip');
+            }
+        });
+        
+        // Hover card functionality for nav buttons (Click to expand version)
         const hoverCard = button.querySelector('.hover-card:not(.create-hover-card)');
         if (hoverCard) {
             let showTimeout, hideTimeout;
@@ -492,19 +649,29 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             button.addEventListener('mouseenter', () => {
-                cancelHide();
-                showCard();
+                if (currentNavVersion === 'Click to expand') {
+                    cancelHide();
+                    showCard();
+                }
             });
             
             button.addEventListener('mouseleave', () => {
-                clearTimeout(showTimeout);
-                scheduleHide();
+                if (currentNavVersion === 'Click to expand') {
+                    clearTimeout(showTimeout);
+                    scheduleHide();
+                }
             });
             
-            hoverCard.addEventListener('mouseenter', cancelHide);
+            hoverCard.addEventListener('mouseenter', () => {
+                if (currentNavVersion === 'Click to expand') {
+                    cancelHide();
+                }
+            });
             hoverCard.addEventListener('mouseleave', () => {
-                clearTimeout(showTimeout);
-                button.classList.remove('show-hover-card');
+                if (currentNavVersion === 'Click to expand') {
+                    clearTimeout(showTimeout);
+                    button.classList.remove('show-hover-card');
+                }
             });
             
             // Click handlers for hover card items
