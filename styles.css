@@ -1791,62 +1791,48 @@ body {
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
-/* Create button at top position */
+/* ==========================================
+   CREATE BUTTON TOP POSITION
+   ========================================== */
+
+/* Base styles when create button is at top */
 .app-container.create-top .create-btn {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    /* Position closer to hamburger: 16px padding + 36px hamburger + 4px gap */
-    top: 56px;
 }
 
-/* For V1/V3 with hamburger - move plus right under hamburger */
-.app-container.create-top.nav-version-1 .create-btn,
-.app-container.create-top.nav-version-3 .create-btn {
-    top: 56px; /* 16px + 36px + 4px */
-}
-
-/* Increase gap between plus and nav icons */
-.app-container.create-top.nav-version-1 .sidebar-nav.main-nav,
-.app-container.create-top.nav-version-3 .sidebar-nav.main-nav {
-    margin-top: 80px !important; /* More space: 4px + 36px + 40px buffer */
-}
-
-/* Override all spacing in sidebar-top when create is at top */
+/* Remove all gaps in sidebar-top */
 .app-container.create-top .sidebar-top {
     gap: 0 !important;
-    padding: 0 !important;
-    margin: 0 !important;
 }
 
-/* Make sure hamburger nav has no extra spacing */
+/* Remove spacing from hamburger nav container */
 .app-container.create-top .sidebar-nav:first-child {
     margin: 0 !important;
     padding: 0 !important;
 }
 
-/* Push nav icons down: need space for 4px + 36px (plus) + 24px = 64px 
-   But main-nav starts after hamburger nav (36px), so total offset from sidebar-top start is 36px + 64px = 100px
-   Plus button bottom is at 56px + 36px = 92px from sidebar
-   Main nav should start at 92px + 24px = 116px from sidebar
-   Since sidebar has 16px padding, and main-nav is inside sidebar-top which starts at 16px,
-   we need main-nav to start at 116px - 16px = 100px from sidebar-top start
-   Hamburger nav is 36px, so margin-top should be 100px - 36px = 64px */
-.app-container.create-top .sidebar-nav.main-nav {
+/* V1/V3 (with hamburger): Plus 4px below hamburger, 24px above icons */
+.app-container.create-top.nav-version-1 .create-btn,
+.app-container.create-top.nav-version-3 .create-btn {
+    /* 16px sidebar padding + 36px hamburger + 4px gap */
+    top: 56px !important;
+}
+
+.app-container.create-top.nav-version-1 .sidebar-nav.main-nav,
+.app-container.create-top.nav-version-3 .sidebar-nav.main-nav {
+    /* Space for: 4px gap + 36px plus + 24px gap = 64px */
     margin-top: 64px !important;
-    padding-top: 0 !important;
 }
 
-/* For V2 (no hamburger) - plus at very top */
+/* V2 (no hamburger): Plus at top, 24px above icons */
 .app-container.create-top.nav-version-2 .create-btn {
-    top: 12px; /* Same as sidebar padding */
+    top: 12px !important;
 }
 
-/* For V2, no hamburger so main-nav starts at top of sidebar-top
-   Plus button bottom: 12px + 36px = 48px from sidebar
-   Main nav should start at 48px + 24px = 72px from sidebar
-   With 12px sidebar padding for V2, main-nav is at 72px - 12px = 60px from sidebar-top start */
 .app-container.create-top.nav-version-2 .sidebar-nav.main-nav {
+    /* Space for: 36px plus + 24px gap = 60px */
     margin-top: 60px !important;
 }
 
