@@ -302,8 +302,8 @@ body {
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
-    transition: opacity 0.2s ease, visibility 0.2s ease, transform 0.2s ease;
-    transform: translateY(0);
+    transition: opacity 0.2s ease, visibility 0.2s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transform: translateX(-8px);
     z-index: 10000;
     display: block;
 }
@@ -314,11 +314,11 @@ body {
     bottom: calc(100% + var(--spacing-2));
     top: auto;
     min-width: 224px;
-    transform: translateY(8px);
+    transform: translateY(8px) translateX(0);
 }
 
 .nav-icon-btn.show-hover-card .create-hover-card {
-    transform: translateY(0);
+    transform: translateY(0) translateX(0);
 }
 
 .nav-icon-btn.show-hover-card .hover-card {
@@ -326,6 +326,7 @@ body {
     visibility: visible;
     pointer-events: auto;
     display: block;
+    transform: translateX(0);
 }
 
 .hover-card-header {
