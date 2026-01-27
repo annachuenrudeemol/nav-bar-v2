@@ -595,13 +595,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
-            // Click to expand behavior - always navigate to first page and update panel
+            // Click to expand behavior
             clearAllActiveStates();
             this.classList.add('active');
-            showSubmenuPanel(categoryName, this);
             
             if (!isPanelVisible) {
-                // Panel was closed, now it's open
+                // Panel is collapsed - just navigate to first page, don't open panel
+                updatePageContent(firstPageName);
+            } else {
+                // Panel is open - update panel content
+                showSubmenuPanel(categoryName, this);
             }
         });
         
