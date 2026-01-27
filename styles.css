@@ -1805,9 +1805,9 @@ body {
     gap: 4px !important;
 }
 
-/* Reset any position styles on create button when at top */
+/* Create button needs relative positioning for hover card to work */
 .app-container.create-top .create-btn {
-    position: static !important;
+    position: relative !important;
     transform: none !important;
 }
 
