@@ -530,9 +530,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Click outside to close panel (for Click to expand version)
+    // Click outside to close panel (for Click to expand and Click to navigate versions)
     document.addEventListener('click', function(e) {
-        if (currentNavVersion === 'Click to expand') {
+        if (currentNavVersion === 'Click to expand' || currentNavVersion === 'Click to navigate') {
             const isPanelVisible = submenuPanel && submenuPanel.classList.contains('visible');
             if (isPanelVisible) {
                 // Check if click is outside sidebar and submenu panel
