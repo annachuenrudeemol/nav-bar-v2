@@ -300,7 +300,7 @@ body {
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
-    transition: opacity 0.2s ease, visibility 0.2s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: opacity 0.15s ease, visibility 0.15s ease;
     transform: translateX(-8px);
     z-index: 10000;
     display: block;
@@ -325,6 +325,7 @@ body {
     pointer-events: auto;
     display: block;
     transform: translateX(0);
+    transition: opacity 0.2s ease, visibility 0.2s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .hover-card-header {
@@ -1825,6 +1826,7 @@ body {
 
 .app-container.create-top .nav-icon-btn.show-hover-card .create-hover-card {
     transform: translateX(0);
+    transition: opacity 0.2s ease, visibility 0.2s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 /* ==========================================
