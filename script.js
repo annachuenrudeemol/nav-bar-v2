@@ -200,6 +200,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     nestedItemEl.addEventListener('click', function(e) {
                         e.stopPropagation();
                         document.querySelectorAll('.submenu-nested-item').forEach(i => i.classList.remove('active'));
+                        document.querySelectorAll('.hover-card-item').forEach(i => i.classList.remove('active'));
                         this.classList.add('active');
                         updatePageContent(nestedText);
                     });
@@ -216,6 +217,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Clear active states from other items
                     document.querySelectorAll('.submenu-item').forEach(i => i.classList.remove('active'));
                     document.querySelectorAll('.submenu-nested-item').forEach(i => i.classList.remove('active'));
+                    document.querySelectorAll('.hover-card-item').forEach(i => i.classList.remove('active'));
                     
                     // Set this parent item as active
                     this.classList.add('active');
@@ -271,6 +273,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 submenuItem.addEventListener('click', function() {
                     document.querySelectorAll('.submenu-item').forEach(i => i.classList.remove('active'));
                     document.querySelectorAll('.submenu-nested-item').forEach(i => i.classList.remove('active'));
+                    document.querySelectorAll('.hover-card-item').forEach(i => i.classList.remove('active'));
                     this.classList.add('active');
                     updatePageContent(itemText);
                 });
@@ -443,6 +446,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         e.stopPropagation();
                         document.querySelectorAll('.submenu-nested-item').forEach(i => i.classList.remove('active'));
                         document.querySelectorAll('.submenu-item').forEach(i => i.classList.remove('active'));
+                        document.querySelectorAll('.hover-card-item').forEach(i => i.classList.remove('active'));
                         this.classList.add('active');
                         submenuItem.classList.add('active');
                         
@@ -478,6 +482,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 submenuItem.addEventListener('click', function() {
                     document.querySelectorAll('.submenu-item').forEach(i => i.classList.remove('active'));
                     document.querySelectorAll('.submenu-nested-item').forEach(i => i.classList.remove('active'));
+                    document.querySelectorAll('.hover-card-item').forEach(i => i.classList.remove('active'));
                     this.classList.add('active');
                     
                     // Now actually navigate
@@ -547,6 +552,10 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!btn.classList.contains('menu-toggle-btn') && !btn.classList.contains('primary')) {
                 btn.classList.remove('active');
             }
+        });
+        // Also clear all hover card item active states
+        document.querySelectorAll('.hover-card-item').forEach(item => {
+            item.classList.remove('active');
         });
     }
 
@@ -753,18 +762,17 @@ document.addEventListener('DOMContentLoaded', function() {
                         updatePageContent(pageName);
                     }
                     
-                    // Clear all hover card item active states and set this one
-                    hoverCardItems.forEach(i => i.classList.remove('active'));
+                    // Clear ALL active states first (icons and ALL hover card items)
+                    clearAllActiveStates();
+                    
+                    // Set this hover card item and button as active
                     this.classList.add('active');
+                    button.classList.add('active');
                     
                     // Hide the hover card
                     button.classList.remove('show-hover-card');
                     clearTimeout(showTimeout);
                     clearTimeout(hideTimeout);
-                    
-                    // Set the nav button as active
-                    clearAllActiveStates();
-                    button.classList.add('active');
                     
                     const categoryName = button.getAttribute('aria-label') || 'Menu';
                     const isPanelVisible = submenuPanel && submenuPanel.classList.contains('visible');
