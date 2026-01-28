@@ -679,6 +679,12 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
+        // Hide tooltip on click
+        button.addEventListener('click', () => {
+            clearTimeout(tooltipTimeout);
+            button.classList.remove('show-tooltip');
+        });
+        
         // Hover card functionality for nav buttons (Click to expand version)
         const hoverCard = button.querySelector('.hover-card:not(.create-hover-card)');
         if (hoverCard) {
