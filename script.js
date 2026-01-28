@@ -592,15 +592,13 @@ document.addEventListener('DOMContentLoaded', function() {
         button.addEventListener('click', function(e) {
             e.stopPropagation();
             
-            // Hide any hover card
-            this.classList.remove('show-hover-card');
-            
             const isPanelVisible = submenuPanel && submenuPanel.classList.contains('visible');
             const categoryName = this.getAttribute('aria-label') || 'Menu';
             const firstPageName = getFirstPageInCategory(this);
             
             // Hover to expand: Always switch pages on click
             if (currentNavVersion === 'Hover to expand') {
+                this.classList.remove('show-hover-card');
                 clearAllActiveStates();
                 this.classList.add('active');
                 updatePageContent(firstPageName);
@@ -613,6 +611,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Click to navigate: Navigate to first page AND open panel
             if (currentNavVersion === 'Click to navigate') {
+                this.classList.remove('show-hover-card');
                 clearAllActiveStates();
                 this.classList.add('active');
                 updatePageContent(firstPageName);
@@ -625,10 +624,26 @@ document.addEventListener('DOMContentLoaded', function() {
             this.classList.add('active');
             
             if (!isPanelVisible) {
-                // Panel is collapsed - just navigate to first page, don't open panel
+                // Panel is collapsed - navigate to first page, keep hover card open
                 updatePageContent(firstPageName);
+                
+                // Select the first page in the hover card
+                const hoverCard = this.querySelector('.hover-card:not(.create-hover-card)');
+                if (hoverCard) {
+                    const hoverCardItems = hoverCard.querySelectorAll('.hover-card-item');
+                    hoverCardItems.forEach(item => item.classList.remove('active'));
+                    // Find and select the first item (matching first page)
+                    hoverCardItems.forEach(item => {
+                        const itemText = item.querySelector('span')?.textContent;
+                        if (itemText === firstPageName) {
+                            item.classList.add('active');
+                        }
+                    });
+                }
+                // Don't hide hover card - let mouseleave handle it
             } else {
-                // Panel is open - update panel content
+                // Panel is open - hide hover card and update panel content
+                this.classList.remove('show-hover-card');
                 showSubmenuPanel(categoryName, this);
             }
         });
@@ -685,8 +700,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 button.classList.remove('show-hover-card');
             }
             
-            // Hide hover card immediately when button is clicked
-            button.addEventListener('click', hideCardImmediately);
+            // Hide hover card immediately when button is clicked (except V1 collapsed)
+            button.addEventListener('click', () => {
+                const isPanelVisible = submenuPanel && submenuPanel.classList.contains('visible');
+                // For V1 when panel is collapsed, don't hide the card on click
+                if (currentNavVersion === 'Click to expand' && !isPanelVisible) {
+                    return; // Let the main click handler deal with it
+                }
+                hideCardImmediately();
+            });
             
             button.addEventListener('mouseenter', () => {
                 const isPanelVisible = submenuPanel && submenuPanel.classList.contains('visible');
