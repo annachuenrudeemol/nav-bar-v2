@@ -618,13 +618,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
-            // Click to navigate: Navigate to first page AND open panel
+            // Click to navigate (V3)
             if (currentNavVersion === 'Click to navigate') {
                 this.classList.remove('show-hover-card');
-                clearAllActiveStates();
-                this.classList.add('active');
-                updatePageContent(firstPageName);
-                showSubmenuPanel(categoryName, this);
+                
+                if (!isPanelVisible) {
+                    // Panel is collapsed - navigate to first page AND open panel
+                    clearAllActiveStates();
+                    this.classList.add('active');
+                    updatePageContent(firstPageName);
+                    showSubmenuPanel(categoryName, this);
+                } else {
+                    // Panel is expanded - just switch submenu panel, don't navigate
+                    showSubmenuPanelWithoutNavigation(categoryName, this);
+                }
                 return;
             }
             
