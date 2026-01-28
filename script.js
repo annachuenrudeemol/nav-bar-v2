@@ -530,9 +530,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Click outside to close panel (for Click to expand and Click to navigate versions)
+    // Click outside to close panel (for Click to expand, Click to navigate, and Hover to preview versions)
     document.addEventListener('click', function(e) {
-        if (currentNavVersion === 'Click to expand' || currentNavVersion === 'Click to navigate') {
+        if (currentNavVersion === 'Click to expand' || currentNavVersion === 'Click to navigate' || currentNavVersion === 'Hover to preview') {
             const isPanelVisible = submenuPanel && submenuPanel.classList.contains('visible');
             if (isPanelVisible) {
                 // Check if click is outside sidebar and submenu panel
@@ -677,6 +677,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     button.classList.add('show-tooltip');
                 }, 250);
             }
+            
+            // V4: Preview submenu panel on hover when expanded
+            if (currentNavVersion === 'Hover to preview' && isPanelVisible) {
+                const categoryName = button.getAttribute('aria-label') || 'Menu';
+                showSubmenuPanelWithoutNavigation(categoryName, button);
+            }
         });
         
         button.addEventListener('mouseleave', () => {
@@ -722,11 +728,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 button.classList.remove('show-hover-card');
             }
             
-            // Hide hover card immediately when button is clicked (except V1 collapsed)
+            // Hide hover card immediately when button is clicked (except V1/V4 collapsed)
             button.addEventListener('click', () => {
                 const isPanelVisible = submenuPanel && submenuPanel.classList.contains('visible');
-                // For V1 when panel is collapsed, don't hide the card on click
-                if (currentNavVersion === 'Click to expand' && !isPanelVisible) {
+                // For V1/V4 when panel is collapsed, don't hide the card on click
+                if ((currentNavVersion === 'Click to expand' || currentNavVersion === 'Hover to preview') && !isPanelVisible) {
                     return; // Let the main click handler deal with it
                 }
                 hideCardImmediately();
@@ -734,8 +740,9 @@ document.addEventListener('DOMContentLoaded', function() {
             
             button.addEventListener('mouseenter', () => {
                 const isPanelVisible = submenuPanel && submenuPanel.classList.contains('visible');
-                // Show hover cards for V1 always, or V3 when panel is collapsed
+                // Show hover cards for V1/V4 always, or V3 when panel is collapsed
                 if (currentNavVersion === 'Click to expand' || 
+                    currentNavVersion === 'Hover to preview' ||
                     (currentNavVersion === 'Click to navigate' && !isPanelVisible)) {
                     cancelHide();
                     showCard();
@@ -743,19 +750,19 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             
             button.addEventListener('mouseleave', () => {
-                if (currentNavVersion === 'Click to expand' || currentNavVersion === 'Click to navigate') {
+                if (currentNavVersion === 'Click to expand' || currentNavVersion === 'Click to navigate' || currentNavVersion === 'Hover to preview') {
                     clearTimeout(showTimeout);
                     scheduleHide();
                 }
             });
             
             hoverCard.addEventListener('mouseenter', () => {
-                if (currentNavVersion === 'Click to expand' || currentNavVersion === 'Click to navigate') {
+                if (currentNavVersion === 'Click to expand' || currentNavVersion === 'Click to navigate' || currentNavVersion === 'Hover to preview') {
                     cancelHide();
                 }
             });
             hoverCard.addEventListener('mouseleave', () => {
-                if (currentNavVersion === 'Click to expand' || currentNavVersion === 'Click to navigate') {
+                if (currentNavVersion === 'Click to expand' || currentNavVersion === 'Click to navigate' || currentNavVersion === 'Hover to preview') {
                     clearTimeout(showTimeout);
                     button.classList.remove('show-hover-card');
                 }
@@ -897,7 +904,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Remove all version classes first
         if (appContainer) {
-            appContainer.classList.remove('nav-version-1', 'nav-version-2', 'nav-version-3');
+            appContainer.classList.remove('nav-version-1', 'nav-version-2', 'nav-version-3', 'nav-version-4');
         }
         
         // Close submenu panel when switching versions
@@ -929,6 +936,17 @@ document.addEventListener('DOMContentLoaded', function() {
             // Click to navigate: Hamburger menu, click navigates AND opens panel, hover cards enabled
             if (appContainer) {
                 appContainer.classList.add('nav-version-3');
+            }
+            if (menuToggleBtn) {
+                menuToggleBtn.style.display = '';
+            }
+            hoverCards.forEach(card => {
+                card.style.display = '';
+            });
+        } else if (version === 'Hover to preview') {
+            // Hover to preview (V4): Like V1, but hovering icons in expanded state previews submenu
+            if (appContainer) {
+                appContainer.classList.add('nav-version-4');
             }
             if (menuToggleBtn) {
                 menuToggleBtn.style.display = '';
