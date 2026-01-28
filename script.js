@@ -644,7 +644,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Show tooltip with delay
                 tooltipTimeout = setTimeout(() => {
                     button.classList.add('show-tooltip');
-                }, 400);
+                }, 250);
             }
         });
         
@@ -665,7 +665,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 clearTimeout(showTimeout);
                 showTimeout = setTimeout(() => {
                     button.classList.add('show-hover-card');
-                }, 400);
+                }, 250);
             }
             
             function scheduleHide() {
@@ -803,7 +803,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 clearTimeout(showTimeout);
                 showTimeout = setTimeout(() => {
                     createBtn.classList.add('show-hover-card');
-                }, 500);
+                }, 300);
             }
             
             function scheduleHide() {
