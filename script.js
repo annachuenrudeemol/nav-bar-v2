@@ -740,10 +740,9 @@ document.addEventListener('DOMContentLoaded', function() {
             
             button.addEventListener('mouseenter', () => {
                 const isPanelVisible = submenuPanel && submenuPanel.classList.contains('visible');
-                // Show hover cards for V1/V4 always, or V3 when panel is collapsed
+                // Show hover cards for V1 always, V3/V4 only when panel is collapsed
                 if (currentNavVersion === 'Click to expand' || 
-                    currentNavVersion === 'Hover to preview' ||
-                    (currentNavVersion === 'Click to navigate' && !isPanelVisible)) {
+                    ((currentNavVersion === 'Hover to preview' || currentNavVersion === 'Click to navigate') && !isPanelVisible)) {
                     cancelHide();
                     showCard();
                 }
