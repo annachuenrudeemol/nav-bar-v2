@@ -331,9 +331,75 @@ body {
 .hover-card-header {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     padding: var(--spacing-3);
     height: 36px;
     border-bottom: 1px solid var(--themes-border-subtle);
+}
+
+/* Expand button in hover card header */
+.hover-card-expand-btn {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--themes-neutrals-neutral);
+    font-size: 12px;
+    padding: 0;
+    border-radius: 4px;
+    transition: color 0.15s ease, background-color 0.15s ease;
+    position: relative;
+}
+
+.hover-card-expand-btn:hover {
+    color: var(--themes-brand-primary);
+    background-color: var(--themes-neutrals-lighter);
+}
+
+/* V5: Always show expand button in layout so opacity can animate */
+.app-container.nav-version-5 .hover-card .hover-card-expand-btn {
+    display: flex;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease, color 0.15s ease, background-color 0.15s ease;
+}
+
+/* V5: Fade in when hover card is hovered */
+.app-container.nav-version-5 .hover-card:hover .hover-card-expand-btn {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Tooltip for expand button - shows after hovering for a moment */
+.hover-card-expand-btn::after {
+    content: 'Click to expand nav';
+    position: absolute;
+    left: calc(100% + 8px);
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #101828;
+    color: white;
+    padding: var(--spacing-2) var(--spacing-3);
+    border-radius: 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: var(--text-xs);
+    font-weight: 400;
+    line-height: var(--line-height-xs);
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.15s ease 0.4s, visibility 0.15s ease 0.4s;
+    z-index: 10001;
+    pointer-events: none;
+}
+
+.hover-card-expand-btn:hover::after {
+    opacity: 1;
+    visibility: visible;
 }
 
 .hover-card-title {
@@ -1916,6 +1982,27 @@ body {
 .app-container.nav-version-3 .nav-icon-btn.expandable.show-tooltip::after {
     opacity: 1;
     visibility: visible;
+}
+
+/* V4 & V5 - M3-style crossfade for submenu content switching when hovering icons */
+.app-container.nav-version-4 .submenu-items,
+.app-container.nav-version-5 .submenu-items {
+    transition: opacity 280ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.app-container.nav-version-4 .submenu-items.fading,
+.app-container.nav-version-5 .submenu-items.fading {
+    opacity: 0;
+}
+
+.app-container.nav-version-4 .submenu-section-header,
+.app-container.nav-version-5 .submenu-section-header {
+    transition: opacity 280ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.app-container.nav-version-4 .submenu-section-header.fading,
+.app-container.nav-version-5 .submenu-section-header.fading {
+    opacity: 0;
 }
 
 /* ==========================================
