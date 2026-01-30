@@ -584,11 +584,11 @@ body {
     display: flex;
     flex-direction: column;
     height: 100%;
-    padding: var(--spacing-4);
+    padding: var(--spacing-3) var(--spacing-4) var(--spacing-4) var(--spacing-4);
     gap: var(--spacing-4);
 }
 
-/* Section header - title left, close (double chevron) right */
+/* Section header - title left, close (double chevron) right; aligned so title center lines up with plus button center */
 .submenu-section-header {
     display: flex;
     align-items: center;
