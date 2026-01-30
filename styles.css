@@ -360,21 +360,33 @@ body {
     background-color: var(--themes-neutrals-lighter);
 }
 
-/* V5: Always show expand button in layout so opacity can animate */
+/* V5 only: Hover card padding to match Figma (shorter header, consistent spacing) */
+.app-container.nav-version-5 .hover-card .hover-card-header {
+    padding: var(--spacing-2) var(--spacing-3);
+    height: auto;
+    min-height: 32px;
+}
+
+.app-container.nav-version-5 .hover-card .hover-card-content {
+    padding: var(--spacing-3);
+}
+
+/* V5: Expand icon visible by default when hover card is shown */
 .app-container.nav-version-5 .hover-card .hover-card-expand-btn {
     display: flex;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.25s ease, color 0.15s ease, background-color 0.15s ease;
-}
-
-/* V5: Fade in when hover card is hovered */
-.app-container.nav-version-5 .hover-card:hover .hover-card-expand-btn {
     opacity: 1;
     pointer-events: auto;
+    transition: color 0.15s ease, background-color 0.15s ease;
+    background-color: transparent;
+    flex-shrink: 0;
 }
 
-/* Tooltip for expand button - shows after hovering for a moment */
+.app-container.nav-version-5 .hover-card .hover-card-expand-btn:hover {
+    background-color: var(--themes-neutrals-lighter);
+    color: var(--themes-neutrals-dark);
+}
+
+/* Tooltip for expand button - shows after hovering for longer */
 .hover-card-expand-btn::after {
     content: 'Click to expand nav';
     position: absolute;
@@ -392,7 +404,7 @@ body {
     white-space: nowrap;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.15s ease 0.4s, visibility 0.15s ease 0.4s;
+    transition: opacity 0.15s ease 0.9s, visibility 0.15s ease 0.9s;
     z-index: 10001;
     pointer-events: none;
 }
@@ -576,13 +588,35 @@ body {
     gap: var(--spacing-4);
 }
 
-/* Section header - title case, larger font */
+/* Section header - title left, close (double chevron) right */
 .submenu-section-header {
     display: flex;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: space-between;
     padding: var(--spacing-1) 0;
     margin-top: 6px;
+}
+
+.submenu-panel-close-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--themes-neutrals-neutral);
+    font-size: 14px;
+    padding: 0;
+    border-radius: var(--rounded-xl);
+    transition: color 0.15s ease, background-color 0.15s ease;
+    flex-shrink: 0;
+}
+
+.submenu-panel-close-btn:hover {
+    color: var(--themes-neutrals-dark);
+    background-color: var(--themes-neutrals-lighter);
 }
 
 .submenu-section-title {
@@ -2003,6 +2037,39 @@ body {
 .app-container.nav-version-4 .submenu-section-header.fading,
 .app-container.nav-version-5 .submenu-section-header.fading {
     opacity: 0;
+}
+
+/* V5: Hide create button position toggle */
+.app-container.nav-version-5 #create-position-toggle-wrapper {
+    display: none;
+}
+
+/* V5: Hide hamburger nav (Create is at top in its place) */
+.app-container.nav-version-5 .sidebar-top > nav.sidebar-nav:has(.menu-toggle-btn) {
+    display: none;
+}
+
+/* V5: Show search nav (under Create); hide in other versions */
+.sidebar-nav-search {
+    display: none;
+}
+
+.app-container.nav-version-5 .sidebar-nav-search {
+    display: flex;
+}
+
+/* 8px gap between Create and Search in V5; restore 24px before main nav */
+.app-container.nav-version-5 .sidebar-top {
+    gap: var(--spacing-2);
+}
+
+.app-container.nav-version-5 .sidebar-top .sidebar-nav.main-nav {
+    margin-top: calc(var(--spacing-6) - var(--spacing-2));
+}
+
+/* Search button: border-default outline (V5) */
+.app-container.nav-version-5 .sidebar-nav-search .nav-icon-btn {
+    border: 1px solid var(--themes-border-default);
 }
 
 /* ==========================================

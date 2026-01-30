@@ -29,6 +29,11 @@
         <div class="app-body">
             <aside class="sidebar">
                 <div class="sidebar-top">
+                    <nav class="sidebar-nav sidebar-nav-search" id="sidebar-nav-search" aria-label="Search">
+                        <button class="nav-icon-btn search-btn" aria-label="Search" type="button">
+                            <i class="fas fa-search nav-icon"></i>
+                        </button>
+                    </nav>
                     <nav class="sidebar-nav">
                         <!-- Hamburger menu at top -->
                         <button class="nav-icon-btn menu-toggle-btn" id="menu-toggle-btn" aria-label="Menu">
@@ -364,10 +369,9 @@
                 <div class="submenu-panel-content">
                     <div class="submenu-section-header" id="submenu-section-header">
                         <span class="submenu-section-title">Dashboard</span>
-                    </div>
-                    <div class="submenu-search-wrapper">
-                        <i class="fas fa-search submenu-search-icon"></i>
-                        <input type="text" class="submenu-search-input" placeholder="Search">
+                        <button class="submenu-panel-close-btn" id="submenu-panel-close-btn" aria-label="Close panel" type="button">
+                            <i class="fas fa-angles-left"></i>
+                        </button>
                     </div>
                     <nav class="submenu-items" id="submenu-items">
                         <!-- Submenu items will be populated dynamically -->
@@ -412,8 +416,8 @@
                                         <span class="version-select-option-text">Hover to preview</span>
                                         <span class="version-select-option-label">V4</span>
                                     </div>
-                                    <div class="version-select-option" data-value="Expand from card">
-                                        <span class="version-select-option-text">Expand from card</span>
+                                    <div class="version-select-option" data-value="Final version">
+                                        <span class="version-select-option-text">Final version</span>
                                         <span class="version-select-option-label">V5</span>
                                     </div>
                                 </div>
@@ -421,7 +425,7 @@
                         </div>
                         
                         <!-- Create Button Position Toggle -->
-                        <div class="toggle-wrapper">
+                        <div class="toggle-wrapper" id="create-position-toggle-wrapper">
                             <span class="toggle-label">Create button:</span>
                             <button class="position-toggle" id="create-position-toggle">
                                 <span class="toggle-option active" data-position="bottom">Bottom</span>
