@@ -574,8 +574,8 @@ body {
 }
 
 .submenu-panel.visible {
-    width: 282px;
-    min-width: 282px;
+    width: 256px;
+    min-width: 256px;
     opacity: 1;
     transform: translateX(0);
 }
@@ -1698,8 +1698,19 @@ body {
 /* Version Select Component */
 .version-select-wrapper {
     position: relative;
-    display: inline-block;
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--spacing-2);
     align-self: flex-start;
+}
+
+.version-select-label {
+    font-family: var(--font-family);
+    font-size: var(--text-sm);
+    font-weight: 400;
+    color: var(--themes-text-medium);
+    line-height: var(--line-height-sm);
 }
 
 .version-select {
@@ -2058,6 +2069,18 @@ body {
     display: flex;
 }
 
+.app-container.nav-version-5 .sidebar-nav-search .nav-icon-btn {
+    outline: none;
+    border: none;
+    box-shadow: none;
+}
+
+.app-container.nav-version-5 .sidebar-nav-search .nav-icon-btn:focus {
+    outline: none;
+    border: none;
+    box-shadow: none;
+}
+
 /* 8px gap between Create and Search in V5; restore 24px before main nav */
 .app-container.nav-version-5 .sidebar-top {
     gap: var(--spacing-2);
@@ -2067,10 +2090,6 @@ body {
     margin-top: calc(var(--spacing-6) - var(--spacing-2));
 }
 
-/* Search button: border-default outline (V5) */
-.app-container.nav-version-5 .sidebar-nav-search .nav-icon-btn {
-    border: 1px solid var(--themes-border-default);
-}
 
 /* ==========================================
    OVERVIEW PANEL - Workflow Customization
