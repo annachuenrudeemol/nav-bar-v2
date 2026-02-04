@@ -759,11 +759,12 @@ body {
     align-items: center;
     justify-content: space-between;
     cursor: pointer;
-    height: auto;
+    min-height: 32px;
     width: 100%;
     padding: 8px 16px;
-    border-radius: 6px;
+    border-radius: var(--rounded-lg);
     transition: background-color 0.15s ease;
+    box-sizing: border-box;
 }
 
 .submenu-item:hover:not(.active) {
@@ -835,15 +836,17 @@ body {
     background-color: transparent !important;
 }
 
-/* Header row inside has-nested item */
+/* Header row inside has-nested item - match regular submenu item size */
 .submenu-item-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: var(--spacing-3);
+    padding: 8px 16px;
     cursor: pointer;
-    border-radius: var(--rounded-xl);
+    border-radius: var(--rounded-lg);
     transition: background-color 0.15s ease;
+    min-height: 32px;
+    box-sizing: border-box;
 }
 
 .submenu-item-header:hover {
@@ -859,19 +862,20 @@ body {
     flex-shrink: 0;
 }
 
-/* Nested items container */
+/* Nested items container - align with regular items gap and indent */
 .submenu-nested-items {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-1);
+    gap: var(--spacing-2);
     max-height: 0;
     overflow: hidden;
     opacity: 0;
     transition: max-height 0.3s ease, opacity 0.3s ease;
-    padding-left: var(--p-6);
-    padding-top: var(--spacing-1);
+    padding-left: 16px;
+    padding-top: var(--spacing-2);
     padding-bottom: 0;
     width: 100%;
+    box-sizing: border-box;
 }
 
 .submenu-item.has-nested.expanded .submenu-nested-items {
@@ -879,7 +883,7 @@ body {
     opacity: 1;
 }
 
-/* Nested item - matches Figma exactly */
+/* Nested item - same size as regular submenu item for visual alignment */
 .submenu-nested-item {
     display: flex;
     flex-direction: column;
@@ -887,11 +891,12 @@ body {
     justify-content: center;
     cursor: pointer;
     width: 100%;
-    padding: var(--spacing-3);
-    padding-left: var(--spacing-3);
-    border-radius: var(--rounded-xl);
+    padding: 8px 16px;
+    border-radius: var(--rounded-lg);
     transition: background-color 0.15s ease;
     background-color: transparent;
+    min-height: 32px;
+    box-sizing: border-box;
 }
 
 .submenu-nested-item:hover:not(.active) {
@@ -911,8 +916,8 @@ body {
 
 .submenu-nested-item-text {
     font-family: var(--font-family);
-    font-size: var(--text-xs);
-    font-weight: 400;
+    font-size: 12px;
+    font-weight: 500;
     line-height: 16px;
     color: var(--themes-text-medium);
     white-space: nowrap;
@@ -1088,11 +1093,12 @@ body {
     gap: 16px;
 }
 
-/* Page Header */
+/* Page Header - fixed size so content below is consistent across pages */
 .page-header {
     display: flex;
     flex-direction: column;
     gap: 2px;
+    flex-shrink: 0;
 }
 
 .page-title-main {
@@ -1135,7 +1141,7 @@ body {
     background-color: transparent;
 }
 
-/* Illustration card */
+/* Illustration card - consistent min height so all pages (e.g. Campaigns) match others */
 .illustration-card {
     display: flex;
     flex-direction: column;
@@ -1146,6 +1152,7 @@ body {
     border-radius: var(--rounded-xl);
     border: 1px solid var(--themes-border-default);
     flex: 1;
+    min-height: 320px;
 }
 
 .illustration-wrapper {
@@ -1934,11 +1941,12 @@ body {
     background-color: var(--themes-neutrals-lightest);
 }
 
-/* Version Controls Container */
+/* Version Controls Container - fixed size so main card is consistent across pages */
 .version-controls {
     display: flex;
     align-items: flex-start;
     gap: 24px;
+    flex-shrink: 0;
 }
 
 /* Position Toggle */
