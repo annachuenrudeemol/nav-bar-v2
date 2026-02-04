@@ -8,6 +8,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // V5: true when panel was opened via expand button (don't "return to active" on mouseleave)
     let v5PanelOpenedByExpand = false;
     
+    // V5/V6: true when user manually closed the panel (prevent hover from reopening)
+    let panelManuallyClosed = false;
+    
     // V4/V5: true when mouse is over submenu panel (keep hovered group when moving to panel)
     let mouseInSubmenuPanel = false;
     
@@ -15,24 +18,16 @@ document.addEventListener('DOMContentLoaded', function() {
     function updatePageContent(pageName) {
         currentPageName = pageName;
         const pageTitleMain = document.getElementById('page-title-main');
-        const pageDescription = document.getElementById('page-description');
         const illustrationTitle = document.getElementById('illustration-title');
-        const illustrationSubtitle = document.getElementById('illustration-subtitle');
         
         // Update page header
         if (pageTitleMain) {
             pageTitleMain.textContent = pageName;
         }
-        if (pageDescription) {
-            pageDescription.textContent = `Page description would go here.`;
-        }
         
         // Update illustration text
         if (illustrationTitle) {
             illustrationTitle.textContent = pageName;
-        }
-        if (illustrationSubtitle) {
-            illustrationSubtitle.textContent = `Page description would go here.`;
         }
     }
 
@@ -42,9 +37,358 @@ document.addEventListener('DOMContentLoaded', function() {
     const submenuItemsContainer = document.getElementById('submenu-items');
     const submenuSectionHeader = document.getElementById('submenu-section-header');
     const menuToggleBtn = document.getElementById('menu-toggle-btn');
+    
+    // Enterprise Reporting Panel - renders the Figma-accurate panel (node 723:6772)
+    function renderEnterpriseReportingPanel(panel, itemsContainer, shouldNavigate = true) {
+        if (!panel) return;
+        
+        panel.classList.add('enterprise-reporting');
+        
+        // Build the Enterprise panel HTML
+        const panelContent = panel.querySelector('.submenu-panel-content');
+        if (!panelContent) return;
+        
+        // Create enterprise panel wrapper matching Figma exactly
+        const enterprisePanel = document.createElement('div');
+        enterprisePanel.className = 'enterprise-panel';
+        enterprisePanel.innerHTML = `
+            <div class="enterprise-panel-header">
+                <span class="enterprise-panel-title">Reporting</span>
+                <button class="submenu-panel-close-btn enterprise-panel-close-btn" aria-label="Close panel" type="button">
+                    <i class="fas fa-angles-left"></i>
+                </button>
+            </div>
+            
+            <div class="enterprise-main-content">
+                <div class="enterprise-views-section">
+                    <div class="enterprise-publishers-wrapper">
+                        <div class="enterprise-publishers-scroll">
+                            <div class="enterprise-publishers-list">
+                                <div class="enterprise-publisher" data-publisher="all">
+                                    <div class="enterprise-publisher-row">
+                                        <div class="enterprise-publisher-left">
+                                            <span class="enterprise-publisher-name">All publishers</span>
+                                        </div>
+                                        <i class="fas fa-chevron-right enterprise-publisher-chevron"></i>
+                                    </div>
+                                    <div class="enterprise-publisher-content">
+                                        <div class="enterprise-section-group">
+                                            <div class="enterprise-section-divider">
+                                                <span class="enterprise-section-divider-text">VIEWS</span>
+                                            </div>
+                                            <div class="enterprise-list-item" data-view="all-overview">
+                                                <span class="enterprise-list-item-text">Overview</span>
+                                                <div class="enterprise-list-item-actions">
+                                                    <button class="enterprise-pin-btn" aria-label="Pin"><i class="fas fa-thumbtack"></i></button>
+                                                </div>
+                                            </div>
+                                            <div class="enterprise-list-item" data-view="all-performance">
+                                                <span class="enterprise-list-item-text">Performance summary</span>
+                                                <div class="enterprise-list-item-actions">
+                                                    <button class="enterprise-pin-btn" aria-label="Pin"><i class="fas fa-thumbtack"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="enterprise-section-group">
+                                            <div class="enterprise-section-divider">
+                                                <span class="enterprise-section-divider-text">REPORTS</span>
+                                            </div>
+                                            <div class="enterprise-list-item" data-report="all-report-1">
+                                                <span class="enterprise-list-item-text">Cross-publisher report</span>
+                                            </div>
+                                            <div class="enterprise-list-item" data-report="all-report-2">
+                                                <span class="enterprise-list-item-text">Monthly summary</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="enterprise-publisher${shouldNavigate ? ' expanded' : ''}" data-publisher="google">
+                                    <div class="enterprise-publisher-row${shouldNavigate ? ' selected' : ''}">
+                                        <div class="enterprise-publisher-left">
+                                            <span class="enterprise-publisher-name">Google</span>
+                                        </div>
+                                        <i class="fas fa-chevron-right enterprise-publisher-chevron"></i>
+                                    </div>
+                                    <div class="enterprise-publisher-content">
+                                        <div class="enterprise-section-group">
+                                            <div class="enterprise-section-divider">
+                                                <span class="enterprise-section-divider-text">VIEWS</span>
+                                            </div>
+                                            <div class="enterprise-list-item" data-view="all-campaigns">
+                                                <span class="enterprise-list-item-text">All campaigns</span>
+                                                <div class="enterprise-list-item-actions">
+                                                    <button class="enterprise-pin-btn" aria-label="Pin"><i class="fas fa-thumbtack"></i></button>
+                                                </div>
+                                            </div>
+                                            <div class="enterprise-list-item${shouldNavigate ? ' active' : ''}" data-view="favorite-view-2">
+                                                <span class="enterprise-list-item-text">Favorite view 2</span>
+                                                <div class="enterprise-list-item-actions">
+                                                    <button class="enterprise-pin-btn pinned" aria-label="Unpin"><i class="fas fa-thumbtack"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="enterprise-section-group">
+                                            <div class="enterprise-section-divider">
+                                                <span class="enterprise-section-divider-text">REPORTS</span>
+                                            </div>
+                                            <div class="enterprise-list-item" data-report="report-1">
+                                                <span class="enterprise-list-item-text">Report name</span>
+                                            </div>
+                                            <div class="enterprise-list-item" data-report="report-2">
+                                                <span class="enterprise-list-item-text">Report name</span>
+                                            </div>
+                                            <div class="enterprise-list-item" data-report="report-3">
+                                                <span class="enterprise-list-item-text">Report name</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="enterprise-publisher" data-publisher="bing">
+                                    <div class="enterprise-publisher-row">
+                                        <div class="enterprise-publisher-left">
+                                            <span class="enterprise-publisher-name">Bing</span>
+                                        </div>
+                                        <i class="fas fa-chevron-right enterprise-publisher-chevron"></i>
+                                    </div>
+                                    <div class="enterprise-publisher-content">
+                                        <div class="enterprise-section-group">
+                                            <div class="enterprise-section-divider">
+                                                <span class="enterprise-section-divider-text">VIEWS</span>
+                                            </div>
+                                            <div class="enterprise-list-item" data-view="bing-campaigns">
+                                                <span class="enterprise-list-item-text">All campaigns</span>
+                                                <div class="enterprise-list-item-actions">
+                                                    <button class="enterprise-pin-btn" aria-label="Pin"><i class="fas fa-thumbtack"></i></button>
+                                                </div>
+                                            </div>
+                                            <div class="enterprise-list-item" data-view="bing-ads">
+                                                <span class="enterprise-list-item-text">Ads performance</span>
+                                                <div class="enterprise-list-item-actions">
+                                                    <button class="enterprise-pin-btn" aria-label="Pin"><i class="fas fa-thumbtack"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="enterprise-section-group">
+                                            <div class="enterprise-section-divider">
+                                                <span class="enterprise-section-divider-text">REPORTS</span>
+                                            </div>
+                                            <div class="enterprise-list-item" data-report="bing-report-1">
+                                                <span class="enterprise-list-item-text">Bing monthly report</span>
+                                            </div>
+                                            <div class="enterprise-list-item" data-report="bing-report-2">
+                                                <span class="enterprise-list-item-text">Search trends</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="enterprise-publisher" data-publisher="trivago">
+                                    <div class="enterprise-publisher-row">
+                                        <div class="enterprise-publisher-left">
+                                            <span class="enterprise-publisher-name">Trivago</span>
+                                        </div>
+                                        <i class="fas fa-chevron-right enterprise-publisher-chevron"></i>
+                                    </div>
+                                    <div class="enterprise-publisher-content">
+                                        <div class="enterprise-section-group">
+                                            <div class="enterprise-section-divider">
+                                                <span class="enterprise-section-divider-text">VIEWS</span>
+                                            </div>
+                                            <div class="enterprise-list-item" data-view="trivago-hotels">
+                                                <span class="enterprise-list-item-text">Hotel listings</span>
+                                                <div class="enterprise-list-item-actions">
+                                                    <button class="enterprise-pin-btn" aria-label="Pin"><i class="fas fa-thumbtack"></i></button>
+                                                </div>
+                                            </div>
+                                            <div class="enterprise-list-item" data-view="trivago-bookings">
+                                                <span class="enterprise-list-item-text">Booking metrics</span>
+                                                <div class="enterprise-list-item-actions">
+                                                    <button class="enterprise-pin-btn" aria-label="Pin"><i class="fas fa-thumbtack"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="enterprise-section-group">
+                                            <div class="enterprise-section-divider">
+                                                <span class="enterprise-section-divider-text">REPORTS</span>
+                                            </div>
+                                            <div class="enterprise-list-item" data-report="trivago-report-1">
+                                                <span class="enterprise-list-item-text">Trivago insights</span>
+                                            </div>
+                                            <div class="enterprise-list-item" data-report="trivago-report-2">
+                                                <span class="enterprise-list-item-text">Rate comparison</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="enterprise-publisher" data-publisher="tripadvisor">
+                                    <div class="enterprise-publisher-row">
+                                        <div class="enterprise-publisher-left">
+                                            <span class="enterprise-publisher-name">Tripadvisor</span>
+                                        </div>
+                                        <i class="fas fa-chevron-right enterprise-publisher-chevron"></i>
+                                    </div>
+                                    <div class="enterprise-publisher-content">
+                                        <div class="enterprise-section-group">
+                                            <div class="enterprise-section-divider">
+                                                <span class="enterprise-section-divider-text">VIEWS</span>
+                                            </div>
+                                            <div class="enterprise-list-item" data-view="tripadvisor-reviews">
+                                                <span class="enterprise-list-item-text">Reviews dashboard</span>
+                                                <div class="enterprise-list-item-actions">
+                                                    <button class="enterprise-pin-btn" aria-label="Pin"><i class="fas fa-thumbtack"></i></button>
+                                                </div>
+                                            </div>
+                                            <div class="enterprise-list-item" data-view="tripadvisor-listings">
+                                                <span class="enterprise-list-item-text">Listings overview</span>
+                                                <div class="enterprise-list-item-actions">
+                                                    <button class="enterprise-pin-btn" aria-label="Pin"><i class="fas fa-thumbtack"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="enterprise-section-group">
+                                            <div class="enterprise-section-divider">
+                                                <span class="enterprise-section-divider-text">REPORTS</span>
+                                            </div>
+                                            <div class="enterprise-list-item" data-report="tripadvisor-report-1">
+                                                <span class="enterprise-list-item-text">Traveler insights</span>
+                                            </div>
+                                            <div class="enterprise-list-item" data-report="tripadvisor-report-2">
+                                                <span class="enterprise-list-item-text">Seasonal trends</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="enterprise-publisher" data-publisher="booking">
+                                    <div class="enterprise-publisher-row">
+                                        <div class="enterprise-publisher-left">
+                                            <span class="enterprise-publisher-name">Booking</span>
+                                        </div>
+                                        <i class="fas fa-chevron-right enterprise-publisher-chevron"></i>
+                                    </div>
+                                    <div class="enterprise-publisher-content">
+                                        <div class="enterprise-section-group">
+                                            <div class="enterprise-section-divider">
+                                                <span class="enterprise-section-divider-text">VIEWS</span>
+                                            </div>
+                                            <div class="enterprise-list-item" data-view="booking-properties">
+                                                <span class="enterprise-list-item-text">Properties</span>
+                                                <div class="enterprise-list-item-actions">
+                                                    <button class="enterprise-pin-btn" aria-label="Pin"><i class="fas fa-thumbtack"></i></button>
+                                                </div>
+                                            </div>
+                                            <div class="enterprise-list-item" data-view="booking-revenue">
+                                                <span class="enterprise-list-item-text">Revenue tracking</span>
+                                                <div class="enterprise-list-item-actions">
+                                                    <button class="enterprise-pin-btn" aria-label="Pin"><i class="fas fa-thumbtack"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="enterprise-section-group">
+                                            <div class="enterprise-section-divider">
+                                                <span class="enterprise-section-divider-text">REPORTS</span>
+                                            </div>
+                                            <div class="enterprise-list-item" data-report="booking-report-1">
+                                                <span class="enterprise-list-item-text">Booking analytics</span>
+                                            </div>
+                                            <div class="enterprise-list-item" data-report="booking-report-2">
+                                                <span class="enterprise-list-item-text">Occupancy report</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="enterprise-create-btn" type="button" aria-label="Create">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+        `;
+        
+        panelContent.appendChild(enterprisePanel);
+        
+        // Add event listeners for publishers (expand/collapse)
+        enterprisePanel.querySelectorAll('.enterprise-publisher').forEach(pub => {
+            const row = pub.querySelector('.enterprise-publisher-row');
+            if (row) {
+                row.addEventListener('click', function() {
+                    // Toggle expanded state
+                    const wasExpanded = pub.classList.contains('expanded');
+                    
+                    // Toggle this publisher (allow multiple to be open)
+                    // Don't add 'selected' just for expanding - only when a page inside is active
+                    if (wasExpanded) {
+                        pub.classList.remove('expanded');
+                    } else {
+                        pub.classList.add('expanded');
+                    }
+                });
+            }
+        });
+        
+        // Add event listeners for list items (views/reports)
+        enterprisePanel.querySelectorAll('.enterprise-list-item').forEach(item => {
+            item.addEventListener('click', function() {
+                // Remove active from all items
+                enterprisePanel.querySelectorAll('.enterprise-list-item').forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Remove selected from all publisher rows, then add to parent publisher
+                enterprisePanel.querySelectorAll('.enterprise-publisher-row').forEach(r => r.classList.remove('selected'));
+                const parentPublisher = this.closest('.enterprise-publisher');
+                if (parentPublisher) {
+                    parentPublisher.querySelector('.enterprise-publisher-row')?.classList.add('selected');
+                }
+                
+                const viewName = this.querySelector('.enterprise-list-item-text')?.textContent;
+                if (viewName && shouldNavigate) {
+                    updatePageContent(viewName);
+                }
+            });
+        });
+        
+        // Add event listeners for pin buttons
+        enterprisePanel.querySelectorAll('.enterprise-pin-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                this.classList.toggle('pinned');
+            });
+        });
+        
+        // Add event listener for create button
+        const createBtn = enterprisePanel.querySelector('.enterprise-create-btn');
+        if (createBtn) {
+            createBtn.addEventListener('click', function() {
+                if (shouldNavigate) {
+                    updatePageContent('New Report');
+                }
+            });
+        }
+        
+        // Add event listener for close button
+        const closeBtn = enterprisePanel.querySelector('.enterprise-panel-close-btn');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                e.preventDefault();
+                v5PanelOpenedByExpand = false;
+                panelManuallyClosed = true;
+                hideSubmenuPanel();
+            });
+        }
+        
+        // Set initial page if navigating
+        if (shouldNavigate) {
+            updatePageContent('Favorite view 2');
+        }
+    }
                 
     // Function to show right panel with submenu items
     function showSubmenuPanel(categoryName, categoryButton) {
+        // Reset manually closed flag since panel is being opened
+        panelManuallyClosed = false;
+        
         // Get submenu data from the button's section or from the button's next sibling
         let submenuData = null;
         const navSection = categoryButton.closest('.nav-section');
@@ -66,9 +410,33 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
+        // Hide Reporting panel footer when switching to another category
+        if (submenuPanel) {
+            submenuPanel.classList.remove('has-panel-footer');
+            submenuPanel.classList.remove('enterprise-reporting');
+            // Remove any existing enterprise panel
+            const existingEnterprisePanel = submenuPanel.querySelector('.enterprise-panel');
+            if (existingEnterprisePanel) {
+                existingEnterprisePanel.remove();
+            }
+        }
+        const submenuPanelFooterEl = document.getElementById('submenu-panel-footer');
+        if (submenuPanelFooterEl) {
+            submenuPanelFooterEl.setAttribute('aria-hidden', 'true');
+        }
+        
         // Clear existing submenu items
         if (submenuItemsContainer) {
             submenuItemsContainer.innerHTML = '';
+        }
+        
+        // Enterprise Reporting panel - completely custom layout (V6 + Reporting ONLY)
+        if (categoryName === 'Reporting' && currentNavVersion === 'Enterprise') {
+            renderEnterpriseReportingPanel(submenuPanel, submenuItemsContainer);
+            if (submenuPanel) {
+                submenuPanel.classList.add('visible');
+            }
+            return;
         }
         
         // Special case for Overview - show workflow customization panel
@@ -166,6 +534,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 submenuItem.innerHTML = `
                     <div class="submenu-item-header">
                         <div class="submenu-item-left">
+                            <i class="fas ${itemIcon} submenu-item-icon"></i>
                             <span class="submenu-item-text">${itemText}</span>
                         </div>
                         <i class="fas fa-chevron-right submenu-item-chevron"></i>
@@ -174,6 +543,7 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 submenuItem.innerHTML = `
                     <div class="submenu-item-left">
+                        <i class="fas ${itemIcon} submenu-item-icon"></i>
                         <span class="submenu-item-text">${itemText}</span>
                     </div>
                 `;
@@ -297,6 +667,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Function to show right panel WITHOUT navigating (just for browsing)
     function showSubmenuPanelWithoutNavigation(categoryName, categoryButton) {
+        // Reset manually closed flag since panel is being opened
+        panelManuallyClosed = false;
+        
         // Get submenu data from the button's section or from the button's next sibling
         let submenuData = null;
         const navSection = categoryButton.closest('.nav-section');
@@ -317,9 +690,33 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
+        // Hide Reporting panel footer when switching to another category
+        if (submenuPanel) {
+            submenuPanel.classList.remove('has-panel-footer');
+            submenuPanel.classList.remove('enterprise-reporting');
+            // Remove any existing enterprise panel
+            const existingEnterprisePanel2 = submenuPanel.querySelector('.enterprise-panel');
+            if (existingEnterprisePanel2) {
+                existingEnterprisePanel2.remove();
+            }
+        }
+        const submenuPanelFooterEl2 = document.getElementById('submenu-panel-footer');
+        if (submenuPanelFooterEl2) {
+            submenuPanelFooterEl2.setAttribute('aria-hidden', 'true');
+        }
+        
         // Clear existing submenu items
         if (submenuItemsContainer) {
             submenuItemsContainer.innerHTML = '';
+        }
+        
+        // Enterprise Reporting panel - completely custom layout (V6 + Reporting ONLY)
+        if (categoryName === 'Reporting' && currentNavVersion === 'Enterprise') {
+            renderEnterpriseReportingPanel(submenuPanel, submenuItemsContainer, false);
+            if (submenuPanel) {
+                submenuPanel.classList.add('visible');
+            }
+            return;
         }
         
         // Special case for Overview - show workflow customization panel
@@ -411,6 +808,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 submenuItem.innerHTML = `
                     <div class="submenu-item-header">
                         <div class="submenu-item-left">
+                            <i class="fas ${itemIcon} submenu-item-icon"></i>
                             <span class="submenu-item-text">${itemText}</span>
                         </div>
                         <i class="fas fa-chevron-right submenu-item-chevron"></i>
@@ -419,6 +817,7 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 submenuItem.innerHTML = `
                     <div class="submenu-item-left">
+                        <i class="fas ${itemIcon} submenu-item-icon"></i>
                         <span class="submenu-item-text">${itemText}</span>
                     </div>
                 `;
@@ -504,6 +903,12 @@ document.addEventListener('DOMContentLoaded', function() {
     function hideSubmenuPanel() {
         if (submenuPanel) {
             submenuPanel.classList.remove('visible');
+            submenuPanel.classList.remove('enterprise-reporting');
+            // Clean up enterprise panel if present
+            const enterprisePanel = submenuPanel.querySelector('.enterprise-panel');
+            if (enterprisePanel) {
+                enterprisePanel.remove();
+            }
         }
         v5PanelOpenedByExpand = false;
     }
@@ -541,10 +946,16 @@ document.addEventListener('DOMContentLoaded', function() {
             hideSubmenuPanel();
         });
     }
+    const submenuPanelCreateBtn = document.querySelector('.submenu-panel-create-btn');
+    if (submenuPanelCreateBtn) {
+        submenuPanelCreateBtn.addEventListener('click', function() {
+            updatePageContent('New report');
+        });
+    }
     
     // Click outside to close panel (for Click to expand, Click to navigate, Hover to preview, and Final version versions)
     document.addEventListener('click', function(e) {
-        if (currentNavVersion === 'Click to expand' || currentNavVersion === 'Click to navigate' || currentNavVersion === 'Hover to preview' || currentNavVersion === 'Final version') {
+        if (currentNavVersion === 'Click to expand' || currentNavVersion === 'Click to navigate' || currentNavVersion === 'Hover to preview' || (currentNavVersion === 'Final version' || currentNavVersion === 'Enterprise')) {
             const isPanelVisible = submenuPanel && submenuPanel.classList.contains('visible');
             if (isPanelVisible) {
                 // Check if click is outside sidebar and submenu panel
@@ -647,6 +1058,28 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
+            // Final version / Enterprise (V5/V6) - clicking nav icon opens panel AND navigates
+            if (currentNavVersion === 'Final version' || currentNavVersion === 'Enterprise') {
+                this.classList.remove('show-hover-card');
+                panelManuallyClosed = false; // Reset when user clicks to open
+                
+                // Clear active states and set this button as active
+                clearAllActiveStates();
+                this.classList.add('active');
+                
+                // Navigate to first page of this category
+                updatePageContent(firstPageName);
+                
+                if (!isPanelVisible) {
+                    // Panel is collapsed - open panel
+                    v5PanelOpenedByExpand = true;
+                }
+                
+                // Show submenu panel with navigation (sets active state on first item)
+                showSubmenuPanel(categoryName, this);
+                return;
+            }
+            
             // Click to expand behavior (V1)
             clearAllActiveStates();
             this.classList.add('active');
@@ -692,44 +1125,20 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             // V4 & V5: Preview submenu panel on hover when expanded with M3-style crossfade
-            if ((currentNavVersion === 'Hover to preview' || currentNavVersion === 'Final version') && isPanelVisible) {
+            if ((currentNavVersion === 'Hover to preview' || (currentNavVersion === 'Final version' || currentNavVersion === 'Enterprise')) && isPanelVisible && !panelManuallyClosed) {
                 // V5: Now in "hover preview" mode, so mouseleave should return to active
-                if (currentNavVersion === 'Final version') {
+                if ((currentNavVersion === 'Final version' || currentNavVersion === 'Enterprise')) {
                     v5PanelOpenedByExpand = false;
                 }
                 // Clear any pending hover timeout
                 clearTimeout(v4HoverTimeout);
                 
-                // Add delay before changing panel (200ms)
+                // Add small delay before changing panel to avoid accidental switches
                 v4HoverTimeout = setTimeout(() => {
                     const categoryName = button.getAttribute('aria-label') || 'Menu';
-                    
-                    // Add fading class to trigger fade out
-                    if (submenuItemsContainer) {
-                        submenuItemsContainer.classList.add('fading');
-                    }
-                    if (submenuSectionHeader) {
-                        submenuSectionHeader.classList.add('fading');
-                    }
-                    
-                    // Wait for fade out (140ms - half of 280ms transition), then swap content and fade in
-                    setTimeout(() => {
-                        showSubmenuPanelWithoutNavigation(categoryName, button);
-                        
-                        // Keep fading class so new content starts invisible
-                        // Then remove it after a frame to trigger fade-in
-                        requestAnimationFrame(() => {
-                            requestAnimationFrame(() => {
-                                if (submenuItemsContainer) {
-                                    submenuItemsContainer.classList.remove('fading');
-                                }
-                                if (submenuSectionHeader) {
-                                    submenuSectionHeader.classList.remove('fading');
-                                }
-                            });
-                        });
-                    }, 140); // Half of 280ms transition
-                }, 200); // Hover delay before panel changes
+                    // Instant swap - no fading animation
+                    showSubmenuPanelWithoutNavigation(categoryName, button);
+                }, 80); // Small hover delay before panel changes
             }
         });
         
@@ -743,25 +1152,30 @@ document.addEventListener('DOMContentLoaded', function() {
             clearTimeout(v4HoverTimeout);
             
             // V4 & V5: Return to active category when mouse leaves
-            if (currentNavVersion === 'Hover to preview' || currentNavVersion === 'Final version') {
+            if (currentNavVersion === 'Hover to preview' || (currentNavVersion === 'Final version' || currentNavVersion === 'Enterprise')) {
                 const isPanelVisible = submenuPanel && submenuPanel.classList.contains('visible');
-                // V5: Don't restore if panel was opened via expand button (keep showing that category)
-                if (currentNavVersion === 'Final version' && v5PanelOpenedByExpand) {
+                // V5: Don't restore if panel was opened via expand button or manually closed
+                if ((currentNavVersion === 'Final version' || currentNavVersion === 'Enterprise') && (v5PanelOpenedByExpand || panelManuallyClosed)) {
                     return;
                 }
                 if (isPanelVisible) {
                     // Find the active button
                     const activeButton = sidebar.querySelector('.nav-icon-btn.expandable.active');
                     if (activeButton && activeButton !== button) {
-                        // Delay slightly to allow moving to another icon
+                        // Longer delay to allow moving between icons without flash-back
                         setTimeout(() => {
                             // Check if we're now hovering over a different nav button or the panel
                             const hoveredButton = sidebar.querySelector('.nav-icon-btn.expandable:hover');
                             if (!hoveredButton && !mouseInSubmenuPanel) {
-                                // Not hovering any button or panel, return to active
+                                // Not hovering any button or panel, return to active with fade
                                 const categoryName = activeButton.getAttribute('aria-label') || 'Menu';
                                 
-                                // Add fading class
+                                // For Enterprise Reporting, only skip if already showing Reporting panel
+                                if (currentNavVersion === 'Enterprise' && categoryName === 'Reporting' && submenuPanel.classList.contains('enterprise-reporting')) {
+                                    return;
+                                }
+                                
+                                // Add fading class for smooth return
                                 if (submenuItemsContainer) {
                                     submenuItemsContainer.classList.add('fading');
                                 }
@@ -770,15 +1184,13 @@ document.addEventListener('DOMContentLoaded', function() {
                                 }
                                 
                                 setTimeout(() => {
-                                    // V5: Don't navigate when returning, just show panel content
-                                    if (currentNavVersion === 'Final version') {
+                                    if ((currentNavVersion === 'Final version' || currentNavVersion === 'Enterprise')) {
                                         showSubmenuPanelWithoutNavigation(categoryName, activeButton);
                                     } else {
                                         showSubmenuPanel(categoryName, activeButton);
                                     }
                                     
-                                    // Keep fading class so content starts invisible
-                                    // Then remove it after a frame to trigger fade-in
+                                    // Fade in the returned content
                                     requestAnimationFrame(() => {
                                         requestAnimationFrame(() => {
                                             if (submenuItemsContainer) {
@@ -789,9 +1201,9 @@ document.addEventListener('DOMContentLoaded', function() {
                                             }
                                         });
                                     });
-                                }, 140); // Half of 280ms transition
+                                }, 200);
                             }
-                        }, 100);
+                        }, 150);
                     }
                 }
             }
@@ -837,7 +1249,7 @@ document.addEventListener('DOMContentLoaded', function() {
             button.addEventListener('click', () => {
                 const isPanelVisible = submenuPanel && submenuPanel.classList.contains('visible');
                 // For V1/V4/V5 when panel is collapsed, don't hide the card on click
-                if ((currentNavVersion === 'Click to expand' || currentNavVersion === 'Hover to preview' || currentNavVersion === 'Final version') && !isPanelVisible) {
+                if ((currentNavVersion === 'Click to expand' || currentNavVersion === 'Hover to preview' || (currentNavVersion === 'Final version' || currentNavVersion === 'Enterprise')) && !isPanelVisible) {
                     return; // Let the main click handler deal with it
                 }
                 hideCardImmediately();
@@ -847,26 +1259,26 @@ document.addEventListener('DOMContentLoaded', function() {
                 const isPanelVisible = submenuPanel && submenuPanel.classList.contains('visible');
                 // Show hover cards for V1 always; V3/V4/V5 only when panel is collapsed
                 if (currentNavVersion === 'Click to expand' ||
-                    ((currentNavVersion === 'Hover to preview' || currentNavVersion === 'Click to navigate' || currentNavVersion === 'Final version') && !isPanelVisible)) {
+                    ((currentNavVersion === 'Hover to preview' || currentNavVersion === 'Click to navigate' || (currentNavVersion === 'Final version' || currentNavVersion === 'Enterprise')) && !isPanelVisible)) {
                     cancelHide();
                     showCard();
                 }
             });
             
             button.addEventListener('mouseleave', () => {
-                if (currentNavVersion === 'Click to expand' || currentNavVersion === 'Click to navigate' || currentNavVersion === 'Hover to preview' || currentNavVersion === 'Final version') {
+                if (currentNavVersion === 'Click to expand' || currentNavVersion === 'Click to navigate' || currentNavVersion === 'Hover to preview' || (currentNavVersion === 'Final version' || currentNavVersion === 'Enterprise')) {
                     clearTimeout(showTimeout);
                     scheduleHide();
                 }
             });
             
             hoverCard.addEventListener('mouseenter', () => {
-                if (currentNavVersion === 'Click to expand' || currentNavVersion === 'Click to navigate' || currentNavVersion === 'Hover to preview' || currentNavVersion === 'Final version') {
+                if (currentNavVersion === 'Click to expand' || currentNavVersion === 'Click to navigate' || currentNavVersion === 'Hover to preview' || (currentNavVersion === 'Final version' || currentNavVersion === 'Enterprise')) {
                     cancelHide();
                 }
             });
             hoverCard.addEventListener('mouseleave', () => {
-                if (currentNavVersion === 'Click to expand' || currentNavVersion === 'Click to navigate' || currentNavVersion === 'Hover to preview' || currentNavVersion === 'Final version') {
+                if (currentNavVersion === 'Click to expand' || currentNavVersion === 'Click to navigate' || currentNavVersion === 'Hover to preview' || (currentNavVersion === 'Final version' || currentNavVersion === 'Enterprise')) {
                     clearTimeout(showTimeout);
                     button.classList.remove('show-hover-card');
                 }
@@ -964,7 +1376,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 clearTimeout(hideTimeout);
                 hideTimeout = setTimeout(() => {
                     createBtn.classList.remove('show-hover-card');
-                }, 100);
+                }, 200);
             }
             
             function cancelHide() {
@@ -1009,7 +1421,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Remove all version classes first
         if (appContainer) {
-            appContainer.classList.remove('nav-version-1', 'nav-version-2', 'nav-version-3', 'nav-version-4', 'nav-version-5');
+            appContainer.classList.remove('nav-version-1', 'nav-version-2', 'nav-version-3', 'nav-version-4', 'nav-version-5', 'nav-version-6');
         }
         
         // Close submenu panel when switching versions
@@ -1076,11 +1488,28 @@ document.addEventListener('DOMContentLoaded', function() {
             if (createBtn && sidebarTop) {
                 sidebarTop.insertBefore(createBtn, sidebarTop.firstChild);
             }
-        } else if (previousVersion === 'Final version') {
-            // When switching away from V5, move Create button back to bottom
+        } else if (version === 'Enterprise') {
+            // Enterprise (V6): hide create button, show hamburger; Reporting panel uses Enterprise design
+            if (appContainer) {
+                appContainer.classList.add('nav-version-5', 'nav-version-6');
+            }
+            if (menuToggleBtn) {
+                menuToggleBtn.style.display = '';
+            }
+            hoverCards.forEach(card => {
+                card.style.display = '';
+            });
+            // Hide the create button for Enterprise
+            const createBtn = document.querySelector('.create-btn');
+            if (createBtn) {
+                createBtn.style.display = 'none';
+            }
+        } else if (previousVersion === 'Final version' || previousVersion === 'Enterprise') {
+            // When switching away from V5 or Enterprise, move Create button back to bottom and show it
             const createBtn = document.querySelector('.create-btn');
             const sidebarBottom = document.querySelector('.sidebar-bottom');
             if (createBtn && sidebarBottom) {
+                createBtn.style.display = '';
                 sidebarBottom.appendChild(createBtn);
             }
         }
@@ -1123,13 +1552,61 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         submenuPanel.addEventListener('mouseleave', function(e) {
             mouseInSubmenuPanel = false;
+            
+            // Check if we're moving to the sidebar
+            const relatedTarget = e.relatedTarget;
+            if (relatedTarget && (relatedTarget.closest('.sidebar') || relatedTarget.closest('.submenu-panel'))) {
+                return;
+            }
+            
             if (currentNavVersion === 'Hover to expand') {
-                // Check if we're moving to the sidebar
-                const relatedTarget = e.relatedTarget;
-                if (relatedTarget && (relatedTarget.closest('.sidebar') || relatedTarget.closest('.submenu-panel'))) {
+                hideSubmenuPanel();
+            }
+            
+            // V4/V5/Enterprise: Return to active category with fade when leaving panel
+            if (currentNavVersion === 'Hover to preview' || currentNavVersion === 'Final version' || currentNavVersion === 'Enterprise') {
+                // Don't return if panel was opened via expand button or manually closed
+                if ((currentNavVersion === 'Final version' || currentNavVersion === 'Enterprise') && (v5PanelOpenedByExpand || panelManuallyClosed)) {
                     return;
                 }
-                hideSubmenuPanel();
+                
+                const activeButton = sidebar.querySelector('.nav-icon-btn.expandable.active');
+                if (activeButton) {
+                    const categoryName = activeButton.getAttribute('aria-label') || 'Menu';
+                    
+                    // For Enterprise Reporting, only skip if already showing Reporting panel
+                    if (currentNavVersion === 'Enterprise' && categoryName === 'Reporting' && submenuPanel.classList.contains('enterprise-reporting')) {
+                        return;
+                    }
+                    
+                    // Add fading class for smooth return
+                    if (submenuItemsContainer) {
+                        submenuItemsContainer.classList.add('fading');
+                    }
+                    if (submenuSectionHeader) {
+                        submenuSectionHeader.classList.add('fading');
+                    }
+                    
+                    setTimeout(() => {
+                        if ((currentNavVersion === 'Final version' || currentNavVersion === 'Enterprise')) {
+                            showSubmenuPanelWithoutNavigation(categoryName, activeButton);
+                        } else {
+                            showSubmenuPanel(categoryName, activeButton);
+                        }
+                        
+                        // Fade in the returned content
+                        requestAnimationFrame(() => {
+                            requestAnimationFrame(() => {
+                                if (submenuItemsContainer) {
+                                    submenuItemsContainer.classList.remove('fading');
+                                }
+                                if (submenuSectionHeader) {
+                                    submenuSectionHeader.classList.remove('fading');
+                                }
+                            });
+                        });
+                    }, 200);
+                }
             }
         });
     }
@@ -1140,7 +1617,7 @@ document.addEventListener('DOMContentLoaded', function() {
             e.stopPropagation();
             
             // Only work in V5
-            if (currentNavVersion !== 'Final version') return;
+            if (currentNavVersion !== 'Final version' && currentNavVersion !== 'Enterprise') return;
             
             // Find the parent nav button
             const navButton = this.closest('.nav-icon-btn.expandable');
@@ -1239,10 +1716,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const createBtn = document.querySelector('.create-btn');
         const sidebarBottom = document.querySelector('.sidebar-bottom');
         const sidebarTop = document.querySelector('.sidebar-top');
-        const hamburgerNav = sidebarTop ? sidebarTop.querySelector('.sidebar-nav:first-child') : null;
-        
-        // Store original parent for returning button to bottom
-        const originalParent = createBtn ? createBtn.parentElement : null;
+        // First .sidebar-nav (search nav in current HTML) – create at top goes here as first icon
+        const firstNav = sidebarTop ? sidebarTop.querySelector('.sidebar-nav') : null;
         
         positionToggle.addEventListener('click', function(e) {
             e.stopPropagation();
@@ -1259,9 +1734,9 @@ document.addEventListener('DOMContentLoaded', function() {
             if (appContainer && createBtn) {
                 if (position === 'top') {
                     appContainer.classList.add('create-top');
-                    // Move create button into hamburger nav (or create a group)
-                    if (hamburgerNav) {
-                        hamburgerNav.appendChild(createBtn);
+                    // Move create button to top of sidebar: insert as first item in first nav
+                    if (firstNav) {
+                        firstNav.insertBefore(createBtn, firstNav.firstChild);
                     }
                 } else {
                     appContainer.classList.remove('create-top');

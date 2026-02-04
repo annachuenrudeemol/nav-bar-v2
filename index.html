@@ -377,6 +377,11 @@
                         <!-- Submenu items will be populated dynamically -->
                     </nav>
                 </div>
+                <div class="submenu-panel-footer" id="submenu-panel-footer" aria-hidden="true">
+                    <button class="submenu-panel-create-btn" type="button" aria-label="Create">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
             </aside>
 
             <main class="main-content">
@@ -384,13 +389,13 @@
                     <!-- Page Header -->
                     <div class="page-header">
                         <h1 class="page-title-main" id="page-title-main">Page Name</h1>
-                        <p class="page-description" id="page-description">Page description would go here.</p>
                     </div>
 
                     <!-- Version Controls -->
                     <div class="version-controls">
                         <!-- Version Select -->
                         <div class="version-select-wrapper">
+                            <span class="version-select-label">Select iteration</span>
                             <button class="version-select" id="version-select">
                                 <span class="version-select-text">Click to expand</span>
                                 <i class="fas fa-chevron-down version-select-chevron"></i>
@@ -420,13 +425,17 @@
                                         <span class="version-select-option-text">Final version</span>
                                         <span class="version-select-option-label">V5</span>
                                     </div>
+                                    <div class="version-select-option" data-value="Enterprise">
+                                        <span class="version-select-option-text">Enterprise</span>
+                                        <span class="version-select-option-label">V6</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         
                         <!-- Create Button Position Toggle -->
                         <div class="toggle-wrapper" id="create-position-toggle-wrapper">
-                            <span class="toggle-label">Create button:</span>
+                            <span class="toggle-label">Toggle position of the "Create" button</span>
                             <button class="position-toggle" id="create-position-toggle">
                                 <span class="toggle-option active" data-position="bottom">Bottom</span>
                                 <span class="toggle-option" data-position="top">Top</span>
@@ -441,7 +450,6 @@
                         </div>
                         <div class="illustration-text">
                             <h2 class="illustration-title" id="illustration-title">Page Name</h2>
-                            <p class="illustration-subtitle" id="illustration-subtitle">Page description would go here.</p>
                         </div>
                     </div>
                 </div>
