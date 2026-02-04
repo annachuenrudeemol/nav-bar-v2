@@ -1071,25 +1071,25 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
-            // Final version / Enterprise (V5/V6) - clicking nav icon opens panel AND navigates
+            // Final version / Enterprise (V5/V6) - clicking nav icon opens panel
             if (currentNavVersion === 'Final version' || currentNavVersion === 'Enterprise') {
                 this.classList.remove('show-hover-card');
                 panelManuallyClosed = false; // Reset when user clicks to open
                 
-                // Clear active states and set this button as active
-                clearAllActiveStates();
-                this.classList.add('active');
-                
-                // Navigate to first page of this category
-                updatePageContent(firstPageName);
-                
-                if (!isPanelVisible) {
-                    // Panel is collapsed - open panel
+                if (currentNavVersion === 'Enterprise' && !isPanelVisible) {
+                    // Enterprise collapsed: open panel to this group only, don't navigate
                     v5PanelOpenedByExpand = true;
+                    showSubmenuPanelWithoutNavigation(categoryName, this);
+                } else {
+                    // Final version, or Enterprise when panel already expanded: navigate and show panel
+                    clearAllActiveStates();
+                    this.classList.add('active');
+                    updatePageContent(firstPageName);
+                    if (!isPanelVisible) {
+                        v5PanelOpenedByExpand = true;
+                    }
+                    showSubmenuPanel(categoryName, this);
                 }
-                
-                // Show submenu panel with navigation (sets active state on first item)
-                showSubmenuPanel(categoryName, this);
                 return;
             }
             
@@ -1326,8 +1326,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     const categoryName = button.getAttribute('aria-label') || 'Menu';
                     const isPanelVisible = submenuPanel && submenuPanel.classList.contains('visible');
                     
-                    // For V3, open panel if collapsed
-                    if (currentNavVersion === 'Click to navigate' && !isPanelVisible) {
+                    // For V3 / Enterprise, open panel if collapsed; otherwise update panel content
+                    if ((currentNavVersion === 'Click to navigate' || currentNavVersion === 'Enterprise') && !isPanelVisible) {
                         showSubmenuPanel(categoryName, button);
                     } else if (isPanelVisible) {
                         showSubmenuPanel(categoryName, button);
