@@ -798,11 +798,12 @@ document.addEventListener('DOMContentLoaded', function() {
             const itemIcon = item.getAttribute('data-icon');
             const hasNested = item.getAttribute('data-has-nested') === 'true';
             const nestedItems = item.querySelectorAll('[data-nested-item]');
-            
-            const submenuItem = document.createElement('div');
-            submenuItem.className = `submenu-item ${hasNested && nestedItems.length > 0 ? 'has-nested' : ''}`;
-            
             const showChevron = hasNested && nestedItems.length > 0;
+            
+            // Preserve active state: mark item active if it matches current page
+            const isItemActive = !showChevron && itemText === currentPageName;
+            const submenuItem = document.createElement('div');
+            submenuItem.className = `submenu-item ${showChevron ? 'has-nested' : ''} ${isItemActive ? 'active' : ''}`;
             
             if (showChevron) {
                 submenuItem.innerHTML = `
@@ -833,9 +834,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 nestedItems.forEach((nestedItem, nestedIndex) => {
                     const nestedText = nestedItem.getAttribute('data-nested-item');
+                    const isNestedActive = nestedText === currentPageName;
                     
                     const nestedItemEl = document.createElement('div');
-                    nestedItemEl.className = 'submenu-nested-item';
+                    nestedItemEl.className = `submenu-nested-item ${isNestedActive ? 'active' : ''}`;
                     nestedItemEl.innerHTML = `
                         <div class="submenu-nested-item-content">
                             <span class="submenu-nested-item-text">${nestedText}</span>
@@ -861,6 +863,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
                 
                 submenuItem.appendChild(nestedContainer);
+                
+                // If current page is in this group, keep parent expanded and active
+                const activeNestedText = Array.from(nestedItems).map(n => n.getAttribute('data-nested-item')).find(t => t === currentPageName);
+                if (activeNestedText) {
+                    submenuItem.classList.add('active', 'expanded');
+                    const chevron = submenuItem.querySelector('.submenu-item-chevron');
+                    if (chevron) {
+                        chevron.classList.remove('fa-chevron-right');
+                        chevron.classList.add('fa-chevron-down');
+                    }
+                }
                 
                 // Click handler for parent (expand/collapse)
                 submenuItem.addEventListener('click', function(e) {
