@@ -42,13 +42,13 @@
                     </nav>
                     <nav class="sidebar-nav main-nav">
                         <!-- Main navigation icons -->
-                        <!-- Overview - single page -->
-                        <div class="nav-section">
-                            <button class="nav-icon-btn home-btn active expandable" aria-label="Overview">
+                        <!-- Overview (Koddi) / Dashboard (Enterprise) - single page -->
+                        <div class="nav-section nav-section-overview">
+                            <button class="nav-icon-btn home-btn active expandable" aria-label="Overview" data-default-aria-label="Overview">
                                 <i class="fas fa-home nav-icon"></i>
                                 <div class="hover-card">
                                     <div class="hover-card-header">
-                                        <span class="hover-card-title">Overview</span>
+                                        <span class="hover-card-title" data-default-text="Overview">Overview</span>
                                         <div class="hover-card-expand-btn" role="button" aria-label="Expand to panel">
                                             <i class="fas fa-up-right-and-down-left-from-center"></i>
                                         </div>
@@ -56,7 +56,7 @@
                                     <div class="hover-card-content">
                                         <div class="hover-card-item active">
                                             <i class="fas fa-home hover-card-icon"></i>
-                                            <span>Overview</span>
+                                            <span data-default-text="Overview">Overview</span>
                                         </div>
                                     </div>
                                 </div>
@@ -64,8 +64,8 @@
                             <div class="nav-submenu-data" style="display: none;">
                             </div>
                         </div>
-                        <!-- Insights -->
-                        <div class="nav-section">
+                        <!-- Insights (hidden on Enterprise) -->
+                        <div class="nav-section nav-section-insights">
                             <button class="nav-icon-btn insights-btn expandable" aria-label="Insights">
                                 <i class="fas fa-lightbulb nav-icon"></i>
                                 <div class="hover-card">
@@ -107,8 +107,8 @@
                                 <div data-item="Advertisers" data-icon="fa-user-tie"></div>
                             </div>
                         </div>
-                        <!-- Yield Management -->
-                        <div class="nav-section">
+                        <!-- Yield Management (hidden on Enterprise) -->
+                        <div class="nav-section nav-section-yield">
                             <button class="nav-icon-btn yield-btn expandable" aria-label="Yield Management">
                                 <i class="fas fa-store nav-icon"></i>
                                 <div class="hover-card">
@@ -150,8 +150,8 @@
                                 <div data-item="Testing" data-icon="fa-flask"></div>
                             </div>
                         </div>
-                        <!-- Media Management -->
-                        <div class="nav-section">
+                        <!-- Media Management (hidden on Enterprise) -->
+                        <div class="nav-section nav-section-media">
                             <button class="nav-icon-btn media-btn expandable" aria-label="Media Management">
                                 <i class="fas fa-photo-video nav-icon"></i>
                                 <div class="hover-card">
@@ -194,8 +194,8 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- Creative Studio -->
-                        <div class="nav-section">
+                        <!-- Creative Studio (hidden on Enterprise) -->
+                        <div class="nav-section nav-section-creative">
                             <button class="nav-icon-btn creative-btn expandable" aria-label="Creative Studio">
                                 <i class="fas fa-palette nav-icon"></i>
                                 <div class="hover-card">
@@ -222,8 +222,8 @@
                                 <div data-item="Approvals" data-icon="fa-check-circle"></div>
                             </div>
                         </div>
-                        <!-- Reporting -->
-                        <div class="nav-section">
+                        <!-- Reporting (second on Enterprise) -->
+                        <div class="nav-section nav-section-reporting">
                             <button class="nav-icon-btn reporting-btn expandable" aria-label="Reporting">
                                 <i class="fas fa-chart-bar nav-icon"></i>
                                 <div class="hover-card">
@@ -234,29 +234,41 @@
                                         </div>
                                     </div>
                                     <div class="hover-card-content">
-                                        <div class="hover-card-item" data-publisher="all">
-                                            <i class="fas fa-layer-group hover-card-icon"></i>
-                                            <span>All publishers</span>
+                                        <!-- Koddi Ads: Report Editor, Saved Reports, Competitive Insights -->
+                                        <div class="hover-card-content-koddi" id="reporting-hover-card-koddi">
+                                            <div class="hover-card-item">
+                                                <i class="fas fa-edit hover-card-icon"></i>
+                                                <span>Report Editor</span>
+                                            </div>
+                                            <div class="hover-card-item">
+                                                <i class="fas fa-save hover-card-icon"></i>
+                                                <span>Saved Reports</span>
+                                            </div>
+                                            <div class="hover-card-item">
+                                                <i class="fas fa-chart-pie hover-card-icon"></i>
+                                                <span>Competitive Insights</span>
+                                            </div>
                                         </div>
-                                        <div class="hover-card-item" data-publisher="google">
-                                            <i class="fas fa-building hover-card-icon"></i>
-                                            <span>Google</span>
-                                        </div>
-                                        <div class="hover-card-item" data-publisher="bing">
-                                            <i class="fas fa-building hover-card-icon"></i>
-                                            <span>Bing</span>
-                                        </div>
-                                        <div class="hover-card-item" data-publisher="trivago">
-                                            <i class="fas fa-building hover-card-icon"></i>
-                                            <span>Trivago</span>
-                                        </div>
-                                        <div class="hover-card-item" data-publisher="tripadvisor">
-                                            <i class="fas fa-building hover-card-icon"></i>
-                                            <span>Tripadvisor</span>
-                                        </div>
-                                        <div class="hover-card-item" data-publisher="booking">
-                                            <i class="fas fa-building hover-card-icon"></i>
-                                            <span>Booking</span>
+                                        <!-- Enterprise: publisher options (no icons) -->
+                                        <div class="hover-card-content-enterprise" id="reporting-hover-card-enterprise" style="display: none;">
+                                            <div class="hover-card-item" data-publisher="all">
+                                                <span>All publishers</span>
+                                            </div>
+                                            <div class="hover-card-item" data-publisher="google">
+                                                <span>Google</span>
+                                            </div>
+                                            <div class="hover-card-item" data-publisher="bing">
+                                                <span>Bing</span>
+                                            </div>
+                                            <div class="hover-card-item" data-publisher="trivago">
+                                                <span>Trivago</span>
+                                            </div>
+                                            <div class="hover-card-item" data-publisher="tripadvisor">
+                                                <span>Tripadvisor</span>
+                                            </div>
+                                            <div class="hover-card-item" data-publisher="booking">
+                                                <span>Booking</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -437,9 +449,24 @@
                                         <span class="version-select-option-text">Final version</span>
                                         <span class="version-select-option-label">V5</span>
                                     </div>
-                                    <div class="version-select-option" data-value="Enterprise">
-                                        <span class="version-select-option-text">Enterprise</span>
-                                        <span class="version-select-option-label">V6</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Final version flavor: Koddi Ads vs Enterprise (visible only when Final version selected) -->
+                        <div class="flavor-select-wrapper" id="flavor-select-wrapper" style="display: none;">
+                            <span class="flavor-select-label">Variant</span>
+                            <button class="flavor-select" id="flavor-select">
+                                <span class="flavor-select-text">Koddi Ads</span>
+                                <i class="fas fa-chevron-down flavor-select-chevron"></i>
+                            </button>
+                            <div class="flavor-select-dropdown" id="flavor-dropdown">
+                                <div class="flavor-select-options">
+                                    <div class="flavor-select-option active" data-value="Koddi Ads">
+                                        <span class="flavor-select-option-text">Koddi Ads</span>
+                                    </div>
+                                    <div class="flavor-select-option" data-value="Enterprise">
+                                        <span class="flavor-select-option-text">Enterprise</span>
                                     </div>
                                 </div>
                             </div>

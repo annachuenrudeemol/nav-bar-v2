@@ -2,6 +2,19 @@ document.addEventListener('DOMContentLoaded', function() {
     // Track current active page
     let currentPageName = 'Overview';
     
+    // Enterprise Reporting: which publisher the current page belongs to (so panel opens with it selected/expanded)
+    let currentPublisher = 'all';
+    
+    // Map publisher id -> { pageNames, firstPageName } for "open panel and show view under this publisher"
+    const enterprisePublisherPages = {
+        all: { pageNames: ['Overview', 'Performance summary', 'Cross-publisher report', 'Monthly summary'], firstPageName: 'Overview' },
+        google: { pageNames: ['All campaigns', 'Favorite view 2', 'Report name'], firstPageName: 'All campaigns' },
+        bing: { pageNames: ['All campaigns', 'Ads performance', 'Bing monthly report', 'Search trends'], firstPageName: 'All campaigns' },
+        trivago: { pageNames: ['Hotel listings', 'Booking metrics', 'Trivago insights', 'Rate comparison'], firstPageName: 'Hotel listings' },
+        tripadvisor: { pageNames: ['Reviews dashboard', 'Listings overview', 'Traveler insights', 'Seasonal trends'], firstPageName: 'Reviews dashboard' },
+        booking: { pageNames: ['Properties', 'Revenue tracking', 'Booking analytics', 'Occupancy report'], firstPageName: 'Properties' }
+    };
+    
     // Track current nav version
     let currentNavVersion = 'Click to expand';
     
@@ -111,8 +124,8 @@ document.addEventListener('DOMContentLoaded', function() {
                                         </div>
                                     </div>
                                 </div>
-                                <div class="enterprise-publisher${shouldNavigate ? ' expanded' : ''}" data-publisher="google">
-                                    <div class="enterprise-publisher-row${shouldNavigate ? ' selected' : ''}">
+                                <div class="enterprise-publisher" data-publisher="google">
+                                    <div class="enterprise-publisher-row">
                                         <div class="enterprise-publisher-left">
                                             <span class="enterprise-publisher-name">Google</span>
                                         </div>
@@ -129,7 +142,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                                     <button class="enterprise-pin-btn" aria-label="Pin"><i class="fas fa-thumbtack"></i></button>
                                                 </div>
                                             </div>
-                                            <div class="enterprise-list-item${shouldNavigate ? ' active' : ''}" data-view="favorite-view-2">
+                                            <div class="enterprise-list-item" data-view="favorite-view-2">
                                                 <span class="enterprise-list-item-text">Favorite view 2</span>
                                                 <div class="enterprise-list-item-actions">
                                                     <button class="enterprise-pin-btn pinned" aria-label="Unpin"><i class="fas fa-thumbtack"></i></button>
@@ -353,8 +366,27 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (viewName && shouldNavigate) {
                     updatePageContent(viewName);
                 }
+                // Track which publisher we're in so panel opens with it selected/expanded next time
+                if (parentPublisher) {
+                    currentPublisher = parentPublisher.getAttribute('data-publisher') || 'all';
+                }
                 // Take user to Reporting: select Reporting nav icon
                 selectReportingNav();
+            });
+        });
+        
+        // Apply current page state: use currentPublisher as source of truth so what you clicked matches what's selected
+        enterprisePanel.querySelectorAll('.enterprise-publisher').forEach(pub => {
+            const pubId = pub.getAttribute('data-publisher') || 'all';
+            if (pubId !== currentPublisher) return;
+            pub.classList.add('expanded');
+            pub.querySelector('.enterprise-publisher-row')?.classList.add('selected');
+            pub.querySelectorAll('.enterprise-list-item').forEach(item => {
+                const textEl = item.querySelector('.enterprise-list-item-text');
+                const text = textEl ? textEl.textContent.trim() : '';
+                if (text === currentPageName) {
+                    item.classList.add('active');
+                }
             });
         });
         
@@ -465,6 +497,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (categoryName === 'Reporting' && currentNavVersion === 'Enterprise') {
             renderEnterpriseReportingPanel(submenuPanel, submenuItemsContainer);
             if (submenuPanel) {
+                submenuPanel.dataset.currentCategory = categoryName;
                 submenuPanel.classList.add('visible');
             }
             return;
@@ -521,6 +554,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             if (submenuPanel) {
+                submenuPanel.dataset.currentCategory = categoryName;
                 submenuPanel.classList.add('visible');
             }
             updatePageContent(categoryName);
@@ -530,6 +564,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // If no submenu data or empty, just show the panel with the category name
         if (!submenuData) {
             if (submenuPanel) {
+                submenuPanel.dataset.currentCategory = categoryName;
                 submenuPanel.classList.add('visible');
             }
             updatePageContent(categoryName);
@@ -542,6 +577,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (items.length === 0) {
             // No items - just show panel
             if (submenuPanel) {
+                submenuPanel.dataset.currentCategory = categoryName;
                 submenuPanel.classList.add('visible');
             }
             updatePageContent(categoryName);
@@ -692,6 +728,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Show the panel
         if (submenuPanel) {
+            submenuPanel.dataset.currentCategory = categoryName;
             submenuPanel.classList.add('visible');
         }
     }
@@ -705,6 +742,10 @@ document.addEventListener('DOMContentLoaded', function() {
         // Reset manually closed flag since panel is being opened (not for Enterprise - cleared in click handlers only)
         if (currentNavVersion !== 'Enterprise') {
             panelManuallyClosed = false;
+        }
+        // If panel is visible and already showing this category, don't re-render so expanded nested items stay open
+        if (submenuPanel && submenuPanel.classList.contains('visible') && submenuPanel.dataset.currentCategory === categoryName) {
+            return;
         }
         
         // Get submenu data from the button's section or from the button's next sibling
@@ -751,6 +792,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (categoryName === 'Reporting' && currentNavVersion === 'Enterprise') {
             renderEnterpriseReportingPanel(submenuPanel, submenuItemsContainer, false);
             if (submenuPanel) {
+                submenuPanel.dataset.currentCategory = categoryName;
                 submenuPanel.classList.add('visible');
             }
             return;
@@ -807,6 +849,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             if (submenuPanel) {
+                submenuPanel.dataset.currentCategory = categoryName;
                 submenuPanel.classList.add('visible');
             }
             return;
@@ -815,6 +858,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // If no submenu data or empty, just show the panel with the category name
         if (!submenuData) {
             if (submenuPanel) {
+                submenuPanel.dataset.currentCategory = categoryName;
                 submenuPanel.classList.add('visible');
             }
             return;
@@ -825,6 +869,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (items.length === 0) {
             if (submenuPanel) {
+                submenuPanel.dataset.currentCategory = categoryName;
                 submenuPanel.classList.add('visible');
             }
             return;
@@ -945,6 +990,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         if (submenuPanel) {
+            submenuPanel.dataset.currentCategory = categoryName;
             submenuPanel.classList.add('visible');
         }
     }
@@ -1119,23 +1165,49 @@ document.addEventListener('DOMContentLoaded', function() {
             // Final version / Enterprise (V5/V6) - clicking nav icon opens panel
             if (currentNavVersion === 'Final version' || currentNavVersion === 'Enterprise') {
                 this.classList.remove('show-hover-card');
-                panelManuallyClosed = false; // Reset when user clicks to open
                 
-                if (currentNavVersion === 'Enterprise' && !isPanelVisible) {
-                    // Enterprise collapsed: open panel to this group only, don't navigate
-                    v5PanelOpenedByExpand = true;
-                    showSubmenuPanelWithoutNavigation(categoryName, this);
-                } else {
-                    // Final version, or Enterprise when panel already expanded: navigate and show panel
-                    clearAllActiveStates();
-                    this.classList.add('active');
-                    updatePageContent(firstPageName);
-                    if (!isPanelVisible) {
-                        v5PanelOpenedByExpand = true;
+                // Enterprise: first page = Dashboard (tooltip only), second = Reporting. Only two visible icons.
+                if (currentNavVersion === 'Enterprise') {
+                    const isActive = this.classList.contains('active');
+                    if (!isActive) {
+                        // Clicking non-active icon: nothing happens
+                        return;
                     }
-                    showSubmenuPanel(categoryName, this);
+                    // Clicking active icon: toggle open/close (Dashboard has no panel, so only close)
+                    if (this.getAttribute('aria-label') === 'Dashboard') {
+                        if (isPanelVisible) {
+                            panelManuallyClosed = true;
+                            hideSubmenuPanel();
+                        }
+                        return;
+                    }
+                    if (isPanelVisible) {
+                        panelManuallyClosed = true;
+                        hideSubmenuPanel();
+                    } else {
+                        panelManuallyClosed = false;
+                        v5PanelOpenedByExpand = true;
+                        showSubmenuPanelWithoutNavigation(categoryName, this);
+                    }
+                    return;
                 }
-                return;
+                
+                // Final version (Koddi Ads): non-active icon = nothing; active icon = toggle panel
+                if (currentNavVersion === 'Final version') {
+                    const isActive = this.classList.contains('active');
+                    if (!isActive) {
+                        return; // Clicking non-active icon: nothing happens
+                    }
+                    if (isPanelVisible) {
+                        panelManuallyClosed = true;
+                        hideSubmenuPanel();
+                    } else {
+                        panelManuallyClosed = false;
+                        v5PanelOpenedByExpand = true;
+                        showSubmenuPanelWithoutNavigation(categoryName, this);
+                    }
+                    return;
+                }
             }
             
             // Click to expand behavior (V1)
@@ -1182,6 +1254,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 }, 250);
             }
             
+            // Enterprise exception: Dashboard shows tooltip on hover (collapsed or expanded), no panel switch
+            if (currentNavVersion === 'Enterprise' && button.getAttribute('aria-label') === 'Dashboard') {
+                tooltipTimeout = setTimeout(() => {
+                    button.classList.add('show-tooltip');
+                }, 250);
+                return;
+            }
+            
             // V4 & V5 & Enterprise: Preview submenu panel on hover when expanded
             if ((currentNavVersion === 'Hover to preview' || currentNavVersion === 'Final version' || currentNavVersion === 'Enterprise') && isPanelVisible && !panelManuallyClosed) {
                 // V5/Enterprise: Now in "hover preview" mode, so mouseleave should return to active
@@ -1201,7 +1281,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         button.addEventListener('mouseleave', () => {
-            if (currentNavVersion === 'Hover to expand' || currentNavVersion === 'Click to navigate') {
+            if (currentNavVersion === 'Hover to expand' || currentNavVersion === 'Click to navigate' || (currentNavVersion === 'Enterprise' && button.getAttribute('aria-label') === 'Dashboard')) {
                 clearTimeout(tooltipTimeout);
                 button.classList.remove('show-tooltip');
             }
@@ -1315,6 +1395,10 @@ document.addEventListener('DOMContentLoaded', function() {
             
             button.addEventListener('mouseenter', () => {
                 const isPanelVisible = submenuPanel && submenuPanel.classList.contains('visible');
+                // Enterprise exception: Dashboard shows tooltip only, not hover card
+                if (currentNavVersion === 'Enterprise' && button.getAttribute('aria-label') === 'Dashboard') {
+                    return;
+                }
                 // Show hover cards for V1 always; V3/V4/V5 only when panel is collapsed
                 if (currentNavVersion === 'Click to expand' ||
                     ((currentNavVersion === 'Hover to preview' || currentNavVersion === 'Click to navigate' || (currentNavVersion === 'Final version' || currentNavVersion === 'Enterprise')) && !isPanelVisible)) {
@@ -1571,6 +1655,36 @@ document.addEventListener('DOMContentLoaded', function() {
                 sidebarBottom.appendChild(createBtn);
             }
         }
+        
+        // Reporting hover card: Koddi Ads = Report Editor / Saved Reports / Competitive Insights; Enterprise = publishers
+        const reportingKoddi = document.getElementById('reporting-hover-card-koddi');
+        const reportingEnterprise = document.getElementById('reporting-hover-card-enterprise');
+        if (reportingKoddi && reportingEnterprise) {
+            if (version === 'Enterprise') {
+                reportingKoddi.style.display = 'none';
+                reportingEnterprise.style.display = '';
+            } else {
+                reportingKoddi.style.display = '';
+                reportingEnterprise.style.display = 'none';
+            }
+        }
+        
+        // Enterprise: first nav item becomes "Dashboard" (tooltip only); other versions = "Overview"
+        const firstSection = document.querySelector('.main-nav .nav-section-overview');
+        if (firstSection) {
+            const btn = firstSection.querySelector('.nav-icon-btn');
+            const titleEl = firstSection.querySelector('.hover-card-title[data-default-text]');
+            const spanEl = firstSection.querySelector('.hover-card-item span[data-default-text]');
+            if (version === 'Enterprise') {
+                if (btn) btn.setAttribute('aria-label', 'Dashboard');
+                if (titleEl) titleEl.textContent = 'Dashboard';
+                if (spanEl) spanEl.textContent = 'Dashboard';
+            } else {
+                if (btn) btn.setAttribute('aria-label', btn.getAttribute('data-default-aria-label') || 'Overview');
+                if (titleEl) titleEl.textContent = titleEl.getAttribute('data-default-text') || 'Overview';
+                if (spanEl) spanEl.textContent = spanEl.getAttribute('data-default-text') || 'Overview';
+            }
+        }
     }
     
     // Sidebar hover handlers for Hover to expand
@@ -1710,6 +1824,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     select.nextElementSibling?.classList.remove('visible');
                 }
             });
+            const flavorSelectBtnEl = document.getElementById('flavor-select');
+            const flavorDropdownEl = document.getElementById('flavor-dropdown');
+            if (flavorSelectBtnEl && flavorDropdownEl) {
+                flavorSelectBtnEl.classList.remove('active');
+                flavorDropdownEl.classList.remove('visible');
+            }
             
             this.classList.toggle('active');
             versionDropdown.classList.toggle('visible');
@@ -1720,20 +1840,31 @@ document.addEventListener('DOMContentLoaded', function() {
             option.addEventListener('click', function(e) {
                 e.stopPropagation();
                 
-                // Update selected text
                 const value = this.getAttribute('data-value');
                 versionSelect.querySelector('.version-select-text').textContent = value;
                 
-                // Update active state
                 versionDropdown.querySelectorAll('.version-select-option').forEach(opt => {
                     opt.classList.remove('active');
                 });
                 this.classList.add('active');
                 
-                // Switch nav version
-                switchNavVersion(value);
+                // Final version: show flavor select and use its value; otherwise hide flavor select
+                const flavorWrapper = document.getElementById('flavor-select-wrapper');
+                if (flavorWrapper) {
+                    if (value === 'Final version') {
+                        flavorWrapper.style.display = '';
+                        const activeFlavor = document.querySelector('.flavor-select-option.active');
+                        const flavor = activeFlavor ? activeFlavor.getAttribute('data-value') : 'Koddi Ads';
+                        const effectiveVersion = flavor === 'Enterprise' ? 'Enterprise' : 'Final version';
+                        switchNavVersion(effectiveVersion);
+                    } else {
+                        flavorWrapper.style.display = 'none';
+                        switchNavVersion(value);
+                    }
+                } else {
+                    switchNavVersion(value);
+                }
                 
-                // Close dropdown
                 versionSelect.classList.remove('active');
                 versionDropdown.classList.remove('visible');
             });
@@ -1763,6 +1894,71 @@ document.addEventListener('DOMContentLoaded', function() {
                 versionSelect.classList.remove('active');
                 versionDropdown.classList.remove('visible');
             }
+        });
+    }
+    
+    // Final version flavor select (Koddi Ads vs Enterprise)
+    const flavorSelectBtn = document.getElementById('flavor-select');
+    const flavorDropdown = document.getElementById('flavor-dropdown');
+    const flavorWrapper = document.getElementById('flavor-select-wrapper');
+    if (flavorSelectBtn && flavorDropdown && flavorWrapper) {
+        flavorSelectBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            document.querySelectorAll('.version-select.active').forEach(s => {
+                s.classList.remove('active');
+                const dd = document.getElementById('version-dropdown');
+                if (dd) dd.classList.remove('visible');
+            });
+            this.classList.toggle('active');
+            flavorDropdown.classList.toggle('visible');
+        });
+        flavorDropdown.querySelectorAll('.flavor-select-option').forEach(option => {
+            option.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const value = this.getAttribute('data-value');
+                flavorSelectBtn.querySelector('.flavor-select-text').textContent = value;
+                flavorDropdown.querySelectorAll('.flavor-select-option').forEach(opt => opt.classList.remove('active'));
+                this.classList.add('active');
+                const effectiveVersion = value === 'Enterprise' ? 'Enterprise' : 'Final version';
+                switchNavVersion(effectiveVersion);
+                flavorSelectBtn.classList.remove('active');
+                flavorDropdown.classList.remove('visible');
+            });
+        });
+        document.addEventListener('click', function(e) {
+            if (!flavorSelectBtn.contains(e.target) && !flavorDropdown.contains(e.target)) {
+                flavorSelectBtn.classList.remove('active');
+                flavorDropdown.classList.remove('visible');
+            }
+        });
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                flavorSelectBtn.classList.remove('active');
+                flavorDropdown.classList.remove('visible');
+            }
+        });
+    }
+    
+    // Enterprise Reporting hover card: clicking a publisher opens the side panel and shows the current view under that publisher
+    const reportingHoverCardEnterprise = document.getElementById('reporting-hover-card-enterprise');
+    const reportingBtnForPanel = document.querySelector('.nav-icon-btn.reporting-btn');
+    if (reportingHoverCardEnterprise && reportingBtnForPanel) {
+        reportingHoverCardEnterprise.querySelectorAll('.hover-card-item[data-publisher]').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.stopPropagation();
+                if (currentNavVersion !== 'Enterprise') return;
+                const publisherId = this.getAttribute('data-publisher') || 'all';
+                const info = enterprisePublisherPages[publisherId];
+                if (!info) return;
+                currentPublisher = publisherId;
+                // If current page is not under this publisher, navigate to first view under this publisher
+                if (info.pageNames.indexOf(currentPageName) === -1) {
+                    updatePageContent(info.firstPageName);
+                }
+                panelManuallyClosed = false;
+                selectReportingNav();
+                showSubmenuPanel('Reporting', reportingBtnForPanel);
+            });
         });
     }
     

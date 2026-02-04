@@ -1941,6 +1941,110 @@ body {
     background-color: var(--themes-neutrals-lightest);
 }
 
+/* Final version flavor select (Koddi Ads vs Enterprise) - visible when Final version is selected */
+.flavor-select-wrapper {
+    position: relative;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+}
+
+.flavor-select-label {
+    font-family: var(--font-family);
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--themes-text-light);
+    line-height: 16px;
+}
+
+.flavor-select {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    min-width: 140px;
+    padding: 8px 12px;
+    border: 1px solid var(--themes-border-default);
+    border-radius: var(--rounded-lg);
+    background-color: var(--color-white);
+    font-family: var(--font-family);
+    font-size: var(--text-sm);
+    color: var(--themes-text-strong);
+    cursor: pointer;
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.flavor-select:hover {
+    border-color: var(--themes-neutrals-light);
+    background-color: var(--themes-neutrals-lightest);
+}
+
+.flavor-select.active {
+    border-color: var(--themes-brand-primary);
+    box-shadow: 0 0 0 2px var(--themes-brand-primary-lightest);
+}
+
+.flavor-select-chevron {
+    font-size: 10px;
+    color: var(--themes-text-medium);
+    transition: transform 0.2s ease;
+}
+
+.flavor-select.active .flavor-select-chevron {
+    transform: rotate(180deg);
+}
+
+.flavor-select-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    min-width: 100%;
+    background-color: var(--color-white);
+    border: 1px solid var(--themes-border-default);
+    border-radius: var(--rounded-lg);
+    box-shadow: var(--shadow-container);
+    z-index: 100;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.15s ease, visibility 0.15s ease;
+}
+
+.flavor-select-dropdown.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.flavor-select-options {
+    display: flex;
+    flex-direction: column;
+    padding: 4px;
+}
+
+.flavor-select-option {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    border-radius: var(--rounded-lg);
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.flavor-select-option:hover {
+    background-color: var(--themes-neutrals-lightest);
+}
+
+.flavor-select-option-text {
+    font-family: var(--font-family);
+    font-size: var(--text-sm);
+    color: var(--themes-text-strong);
+}
+
+.flavor-select-option.active .flavor-select-option-text {
+    color: var(--themes-brand-primary);
+    font-weight: 500;
+}
+
 /* Version Controls Container - fixed size so main card is consistent across pages */
 .version-controls {
     display: flex;
@@ -2167,6 +2271,47 @@ body {
 /* V6 (Enterprise): Hide create button */
 .app-container.nav-version-6 .create-btn {
     display: none;
+}
+
+/* V6 (Enterprise): Show only Dashboard (first) and Reporting; hide other nav sections */
+.app-container.nav-version-6 .nav-section-insights,
+.app-container.nav-version-6 .nav-section-yield,
+.app-container.nav-version-6 .nav-section-media,
+.app-container.nav-version-6 .nav-section-creative {
+    display: none;
+}
+
+/* V6 (Enterprise): Dashboard is tooltip-only (no expand to panel) */
+.app-container.nav-version-6 .nav-section-overview .hover-card-expand-btn {
+    display: none;
+}
+
+/* V6 (Enterprise): Dashboard shows tooltip on hover (no panel switch) */
+.app-container.nav-version-6 .nav-section-overview .nav-icon-btn::after {
+    content: attr(aria-label);
+    position: absolute;
+    left: calc(100% + 8px);
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #101828;
+    color: white;
+    padding: var(--spacing-2) var(--spacing-3);
+    border-radius: 8px;
+    font-family: var(--font-family);
+    font-size: var(--text-xs);
+    font-weight: 400;
+    line-height: var(--line-height-xs);
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.15s ease, visibility 0.15s ease;
+    z-index: 1000;
+    pointer-events: none;
+}
+
+.app-container.nav-version-6 .nav-section-overview .nav-icon-btn.show-tooltip::after {
+    opacity: 1;
+    visibility: visible;
 }
 
 /* V5: Show search nav (under Create); hide in other versions */
