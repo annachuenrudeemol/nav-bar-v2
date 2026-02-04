@@ -38,6 +38,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const submenuSectionHeader = document.getElementById('submenu-section-header');
     const menuToggleBtn = document.getElementById('menu-toggle-btn');
     
+    // When user interacts with Enterprise Reporting panel (publisher or list item), select Reporting nav icon
+    function selectReportingNav() {
+        document.querySelectorAll('.nav-icon-btn.expandable').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        const reportingBtn = document.querySelector('.nav-icon-btn.reporting-btn');
+        if (reportingBtn) reportingBtn.classList.add('active');
+    }
+    
     // Enterprise Reporting Panel - renders the Figma-accurate panel (node 723:6772)
     function renderEnterpriseReportingPanel(panel, itemsContainer, shouldNavigate = true) {
         if (!panel) return;
@@ -308,16 +317,15 @@ document.addEventListener('DOMContentLoaded', function() {
         
         panelContent.appendChild(enterprisePanel);
         
-        // Add event listeners for publishers (expand/collapse)
+        // Add event listeners for publishers (expand/collapse) - also select Reporting nav when clicked
         enterprisePanel.querySelectorAll('.enterprise-publisher').forEach(pub => {
             const row = pub.querySelector('.enterprise-publisher-row');
             if (row) {
                 row.addEventListener('click', function() {
+                    // Take user to Reporting: select Reporting nav icon (so they're "on" Reporting)
+                    selectReportingNav();
                     // Toggle expanded state
                     const wasExpanded = pub.classList.contains('expanded');
-                    
-                    // Toggle this publisher (allow multiple to be open)
-                    // Don't add 'selected' just for expanding - only when a page inside is active
                     if (wasExpanded) {
                         pub.classList.remove('expanded');
                     } else {
@@ -327,7 +335,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // Add event listeners for list items (views/reports)
+        // Add event listeners for list items (views/reports) - navigate to page and select Reporting nav
         enterprisePanel.querySelectorAll('.enterprise-list-item').forEach(item => {
             item.addEventListener('click', function() {
                 // Remove active from all items
@@ -345,6 +353,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (viewName && shouldNavigate) {
                     updatePageContent(viewName);
                 }
+                // Take user to Reporting: select Reporting nav icon
+                selectReportingNav();
             });
         });
         
@@ -363,6 +373,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (shouldNavigate) {
                     updatePageContent('New Report');
                 }
+                selectReportingNav();
             });
         }
         
