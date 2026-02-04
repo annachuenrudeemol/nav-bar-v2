@@ -1848,17 +1848,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
                 this.classList.add('active');
                 
-                // Final version: show flavor select and use its value; otherwise hide flavor select
+                // Final version: show flavor select (Koddi Ads / Enterprise) and use its value; otherwise hide flavor select
                 const flavorWrapper = document.getElementById('flavor-select-wrapper');
                 if (flavorWrapper) {
                     if (value === 'Final version') {
-                        flavorWrapper.style.display = '';
+                        flavorWrapper.classList.remove('flavor-select-wrapper--hidden');
                         const activeFlavor = document.querySelector('.flavor-select-option.active');
                         const flavor = activeFlavor ? activeFlavor.getAttribute('data-value') : 'Koddi Ads';
                         const effectiveVersion = flavor === 'Enterprise' ? 'Enterprise' : 'Final version';
                         switchNavVersion(effectiveVersion);
                     } else {
-                        flavorWrapper.style.display = 'none';
+                        flavorWrapper.classList.add('flavor-select-wrapper--hidden');
                         switchNavVersion(value);
                     }
                 } else {
@@ -2003,6 +2003,18 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Initialize with Click to expand
-    switchNavVersion('Click to expand');
+    // Initialize from current iteration in DOM (default is "Final version")
+    const versionSelectEl = document.getElementById('version-select');
+    const versionTextEl = versionSelectEl && versionSelectEl.querySelector('.version-select-text');
+    const initialIteration = versionTextEl ? versionTextEl.textContent.trim() : 'Click to expand';
+    const flavorWrapperInit = document.getElementById('flavor-select-wrapper');
+    if (initialIteration === 'Final version' && flavorWrapperInit) {
+        flavorWrapperInit.classList.remove('flavor-select-wrapper--hidden');
+        const activeFlavor = document.querySelector('.flavor-select-option.active');
+        const flavor = activeFlavor ? activeFlavor.getAttribute('data-value') : 'Koddi Ads';
+        switchNavVersion(flavor === 'Enterprise' ? 'Enterprise' : 'Final version');
+    } else {
+        if (flavorWrapperInit) flavorWrapperInit.classList.add('flavor-select-wrapper--hidden');
+        switchNavVersion(initialIteration);
+    }
 });

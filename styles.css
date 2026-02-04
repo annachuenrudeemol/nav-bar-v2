@@ -1944,10 +1944,15 @@ body {
 /* Final version flavor select (Koddi Ads vs Enterprise) - visible when Final version is selected */
 .flavor-select-wrapper {
     position: relative;
-    display: inline-flex;
     flex-direction: column;
     align-items: flex-start;
     gap: 4px;
+}
+.flavor-select-wrapper--hidden {
+    display: none !important;
+}
+.flavor-select-wrapper:not(.flavor-select-wrapper--hidden) {
+    display: inline-flex;
 }
 
 .flavor-select-label {
