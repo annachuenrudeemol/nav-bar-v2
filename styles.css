@@ -2328,6 +2328,11 @@ body {
     display: flex;
 }
 
+/* Enterprise (V6): hide search nav (magnifying glass) */
+.app-container.nav-version-6 .sidebar-nav-search {
+    display: none;
+}
+
 /* Show search nav when create is at top (for toggle) */
 .app-container.create-top .sidebar-nav-search {
     display: flex;
