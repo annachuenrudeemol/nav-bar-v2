@@ -369,13 +369,27 @@ document.addEventListener('DOMContentLoaded', function() {
         // Add event listener for close button
         const closeBtn = enterprisePanel.querySelector('.enterprise-panel-close-btn');
         if (closeBtn) {
+            // Use capture phase so we run first and no other handler can reopen the panel
             closeBtn.addEventListener('click', function(e) {
                 e.stopPropagation();
+                e.stopImmediatePropagation();
                 e.preventDefault();
                 v5PanelOpenedByExpand = false;
                 panelManuallyClosed = true;
-                hideSubmenuPanel();
-            });
+                // Hide panel immediately
+                if (submenuPanel) {
+                    submenuPanel.classList.remove('visible');
+                    submenuPanel.classList.remove('enterprise-reporting');
+                }
+                // Defer DOM cleanup so click isn't retargeted to element under cursor
+                setTimeout(function() {
+                    if (submenuPanel) {
+                        const ep = submenuPanel.querySelector('.enterprise-panel');
+                        if (ep) ep.remove();
+                    }
+                    v5PanelOpenedByExpand = false;
+                }, 50);
+            }, true);
         }
         
         // Set initial page if navigating
@@ -386,8 +400,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 
     // Function to show right panel with submenu items
     function showSubmenuPanel(categoryName, categoryButton) {
-        // Reset manually closed flag since panel is being opened
-        panelManuallyClosed = false;
+        // Enterprise: never reopen if user closed the panel (only hamburger/nav click can reopen)
+        if (currentNavVersion === 'Enterprise' && panelManuallyClosed) {
+            return;
+        }
+        // Reset manually closed flag since panel is being opened (not for Enterprise - cleared in click handlers only)
+        if (currentNavVersion !== 'Enterprise') {
+            panelManuallyClosed = false;
+        }
         
         // Get submenu data from the button's section or from the button's next sibling
         let submenuData = null;
@@ -667,8 +687,14 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Function to show right panel WITHOUT navigating (just for browsing)
     function showSubmenuPanelWithoutNavigation(categoryName, categoryButton) {
-        // Reset manually closed flag since panel is being opened
-        panelManuallyClosed = false;
+        // Enterprise: never reopen if user closed the panel (only hamburger/nav click can reopen)
+        if (currentNavVersion === 'Enterprise' && panelManuallyClosed) {
+            return;
+        }
+        // Reset manually closed flag since panel is being opened (not for Enterprise - cleared in click handlers only)
+        if (currentNavVersion !== 'Enterprise') {
+            panelManuallyClosed = false;
+        }
         
         // Get submenu data from the button's section or from the button's next sibling
         let submenuData = null;
@@ -935,6 +961,10 @@ document.addEventListener('DOMContentLoaded', function() {
             if (isPanelVisible) {
                 hideSubmenuPanel();
             } else {
+                // Enterprise: clear manually-closed flag so panel can open
+                if (currentNavVersion === 'Enterprise') {
+                    panelManuallyClosed = false;
+                }
                 const activeButton = sidebar.querySelector('.nav-icon-btn.expandable.active');
                 if (activeButton) {
                     const categoryName = activeButton.getAttribute('aria-label') || 'Menu';
@@ -956,6 +986,10 @@ document.addEventListener('DOMContentLoaded', function() {
     if (submenuPanelCloseBtn) {
         submenuPanelCloseBtn.addEventListener('click', function(e) {
             e.stopPropagation();
+            e.preventDefault();
+            if (currentNavVersion === 'Enterprise') {
+                panelManuallyClosed = true;
+            }
             hideSubmenuPanel();
         });
     }
@@ -1137,10 +1171,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 }, 250);
             }
             
-            // V4 & V5: Preview submenu panel on hover when expanded with M3-style crossfade
-            if ((currentNavVersion === 'Hover to preview' || (currentNavVersion === 'Final version' || currentNavVersion === 'Enterprise')) && isPanelVisible && !panelManuallyClosed) {
-                // V5: Now in "hover preview" mode, so mouseleave should return to active
-                if ((currentNavVersion === 'Final version' || currentNavVersion === 'Enterprise')) {
+            // V4 & V5 & Enterprise: Preview submenu panel on hover when expanded
+            if ((currentNavVersion === 'Hover to preview' || currentNavVersion === 'Final version' || currentNavVersion === 'Enterprise') && isPanelVisible && !panelManuallyClosed) {
+                // V5/Enterprise: Now in "hover preview" mode, so mouseleave should return to active
+                if (currentNavVersion === 'Final version' || currentNavVersion === 'Enterprise') {
                     v5PanelOpenedByExpand = false;
                 }
                 // Clear any pending hover timeout
@@ -1326,10 +1360,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     const categoryName = button.getAttribute('aria-label') || 'Menu';
                     const isPanelVisible = submenuPanel && submenuPanel.classList.contains('visible');
                     
-                    // For V3 / Enterprise, open panel if collapsed; otherwise update panel content
-                    if ((currentNavVersion === 'Click to navigate' || currentNavVersion === 'Enterprise') && !isPanelVisible) {
+                    // For V3, open panel if collapsed. Enterprise: only navigate, do not expand panel
+                    if (currentNavVersion === 'Click to navigate' && !isPanelVisible) {
                         showSubmenuPanel(categoryName, button);
-                    } else if (isPanelVisible) {
+                    } else if (currentNavVersion !== 'Enterprise' && isPanelVisible) {
                         showSubmenuPanel(categoryName, button);
                     }
                     
