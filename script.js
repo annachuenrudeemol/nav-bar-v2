@@ -58,6 +58,23 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         const reportingBtn = document.querySelector('.nav-icon-btn.reporting-btn');
         if (reportingBtn) reportingBtn.classList.add('active');
+        syncEnterpriseOnReporting();
+    }
+    
+    // Sync app-container class so hamburger is hidden when on Reporting (Enterprise only)
+    function syncEnterpriseOnReporting() {
+        const appContainer = document.querySelector('.app-container');
+        if (!appContainer) return;
+        if (currentNavVersion !== 'Enterprise') {
+            appContainer.classList.remove('enterprise-on-reporting');
+            return;
+        }
+        const reportingBtn = document.querySelector('.nav-icon-btn.reporting-btn');
+        if (reportingBtn && reportingBtn.classList.contains('active')) {
+            appContainer.classList.add('enterprise-on-reporting');
+        } else {
+            appContainer.classList.remove('enterprise-on-reporting');
+        }
     }
     
     // Enterprise Reporting Panel - renders the Figma-accurate panel (node 723:6772)
@@ -1034,6 +1051,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         showSubmenuPanel(categoryName, firstButton);
                     }
                 }
+                syncEnterpriseOnReporting();
             }
         });
     }
@@ -1084,6 +1102,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('.hover-card-item').forEach(item => {
             item.classList.remove('active');
         });
+        syncEnterpriseOnReporting();
     }
 
     // Helper function to get the first page name from a category's submenu data
@@ -1446,6 +1465,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Set this hover card item and button as active
                     this.classList.add('active');
                     button.classList.add('active');
+                    syncEnterpriseOnReporting();
                     
                     // Hide the hover card
                     button.classList.remove('show-hover-card');
@@ -1685,6 +1705,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (spanEl) spanEl.textContent = spanEl.getAttribute('data-default-text') || 'Overview';
             }
         }
+        syncEnterpriseOnReporting();
     }
     
     // Sidebar hover handlers for Hover to expand
@@ -1911,6 +1932,13 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             this.classList.toggle('active');
             flavorDropdown.classList.toggle('visible');
+            if (flavorDropdown.classList.contains('visible')) {
+                flavorDropdown.style.removeProperty('opacity');
+                flavorDropdown.style.removeProperty('visibility');
+            } else {
+                flavorDropdown.style.opacity = '0';
+                flavorDropdown.style.visibility = 'hidden';
+            }
         });
         flavorDropdown.querySelectorAll('.flavor-select-option').forEach(option => {
             option.addEventListener('click', function(e) {
@@ -1923,18 +1951,24 @@ document.addEventListener('DOMContentLoaded', function() {
                 switchNavVersion(effectiveVersion);
                 flavorSelectBtn.classList.remove('active');
                 flavorDropdown.classList.remove('visible');
+                flavorDropdown.style.opacity = '0';
+                flavorDropdown.style.visibility = 'hidden';
             });
         });
         document.addEventListener('click', function(e) {
             if (!flavorSelectBtn.contains(e.target) && !flavorDropdown.contains(e.target)) {
                 flavorSelectBtn.classList.remove('active');
                 flavorDropdown.classList.remove('visible');
+                flavorDropdown.style.opacity = '0';
+                flavorDropdown.style.visibility = 'hidden';
             }
         });
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
                 flavorSelectBtn.classList.remove('active');
                 flavorDropdown.classList.remove('visible');
+                flavorDropdown.style.opacity = '0';
+                flavorDropdown.style.visibility = 'hidden';
             }
         });
     }
